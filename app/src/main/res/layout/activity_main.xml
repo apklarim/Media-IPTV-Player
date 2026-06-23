@@ -1,27 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#303030">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#732A78"
-        android:gravity="center_vertical"
-        android:padding="16dp"
-        android:text="Media IPTV Player"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        android:textSize="24sp"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="40dp"
-        android:src="@android:drawable/ic_media_play"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#0097A7"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="Media IPTV Player"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="26sp"/>
 
-</LinearLayout>
+        <ImageView
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:src="@android:drawable/ic_media_play"
+            android:tint="#00BCD4"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/btnFile"
+                android:layout_width="0dp"
+                android:layout_height="170dp"
+                android:layout_weight="1"
+                android:text="BELGE AĞACI AÇ"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:backgroundTint="#0097A7"/>
+
+            <Button
+                android:id="@+id/btnUrl"
+                android:layout_width="0dp"
+                android:layout_height="170dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="URL AÇ"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:backgroundTint="#0097A7"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/btnOld"
+                android:layout_width="0dp"
+                android:layout_height="170dp"
+                android:layout_weight="1"
+                android:text="DOSYA SEÇİCİ (ESKİ)"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:backgroundTint="#0097A7"/>
+
+            <Button
+                android:id="@+id/btnSettings"
+                android:layout_width="0dp"
+                android:layout_height="170dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="AYARLAR"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:backgroundTint="#0097A7"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Bir sonraki başlangıçta seçimi hatırla"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"/>
+
+            <Switch
+                android:id="@+id/swRemember"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
