@@ -2,7 +2,7 @@ package com.media.iptvplayer
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.LinearLayout
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Canlı TV
-        findViewById<LinearLayout>(R.id.cardLive)
+        findViewById<Button>(R.id.cardLive)
             .setOnClickListener {
 
                 Toast.makeText(
@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         // Filmler
-        findViewById<LinearLayout>(R.id.cardMovies)
+        findViewById<Button>(R.id.cardMovies)
             .setOnClickListener {
 
                 Toast.makeText(
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         // Diziler
-        findViewById<LinearLayout>(R.id.cardSeries)
+        findViewById<Button>(R.id.cardSeries)
             .setOnClickListener {
 
                 Toast.makeText(
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         // Ayarlar
-        findViewById<LinearLayout>(R.id.cardSettings)
+        findViewById<Button>(R.id.cardSettings)
             .setOnClickListener {
 
                 startActivity(
