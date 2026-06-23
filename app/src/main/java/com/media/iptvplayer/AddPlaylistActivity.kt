@@ -26,20 +26,25 @@ class AddPlaylistActivity : AppCompatActivity() {
                 )
             }
 
-        // M3U Dosyası
+        // M3U DOSYA
 
         findViewById<Button>(R.id.btnM3uFile)
             .setOnClickListener {
 
-                // Daha sonra eklenecek
+                // Sonraki adımda eklenecek
             }
 
-        // Xtream Codes
+        // XTREAM
 
         findViewById<Button>(R.id.btnXtream)
             .setOnClickListener {
 
-                // Daha sonra eklenecek
+                startActivity(
+                    Intent(
+                        this,
+                        XtreamActivity::class.java
+                    )
+                )
             }
     }
 }
