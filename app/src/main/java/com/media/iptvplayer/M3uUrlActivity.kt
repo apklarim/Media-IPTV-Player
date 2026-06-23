@@ -6,11 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.media.iptvplayer.model.Playlist
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class M3uUrlActivity : AppCompatActivity() {
 
@@ -29,11 +25,8 @@ class M3uUrlActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnSaveM3u)
             .setOnClickListener {
 
-                val name =
-                    etName.text.toString().trim()
-
-                val url =
-                    etUrl.text.toString().trim()
+                val name = etName.text.toString().trim()
+                val url = etUrl.text.toString().trim()
 
                 if (name.isEmpty() || url.isEmpty()) {
 
@@ -46,54 +39,29 @@ class M3uUrlActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                lifecycleScope.launch {
+                PlaylistManager.addPlaylist(
+                    this,
+                    Playlist(
+                        name = name,
+                        type = "M3U",
+                        url = url
+                    )
+                )
 
-                    try {
+                Toast.makeText(
+                    this,
+                    "Liste kaydedildi",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-                        val content =
-                            withContext(Dispatchers.IO) {
+                startActivity(
+                    Intent(
+                        this,
+                        PlaylistListActivity::class.java
+                    )
+                )
 
-                                NetworkUtils.downloadText(url)
-                            }
-
-                        ChannelRepository.channels =
-                            M3uParser.parse(content)
-
-                        PlaylistManager.addPlaylist(
-                            this@M3uUrlActivity,
-                            Playlist(
-                                name = name,
-                                type = "M3U",
-                                url = url
-                            )
-                        )
-
-                        Toast.makeText(
-                            this@M3uUrlActivity,
-                            "Liste yüklendi: ${
-                                ChannelRepository.channels.size
-                            } kanal",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        startActivity(
-                            Intent(
-                                this@M3uUrlActivity,
-                                PlaylistListActivity::class.java
-                            )
-                        )
-
-                        finish()
-
-                    } catch (e: Exception) {
-
-                        Toast.makeText(
-                            this@M3uUrlActivity,
-                            "Liste yüklenemedi",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
+                finish()
             }
     }
 }
