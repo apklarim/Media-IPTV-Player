@@ -2,8 +2,11 @@ package com.media.iptvplayer
 
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 
@@ -20,14 +23,46 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView = findViewById(R.id.playerView)
 
-        val url = intent.getStringExtra("url") ?: return
+        val url = intent.getStringExtra("url")
 
-        player = ExoPlayer.Builder(this)
-            .build()
+        if (url.isNullOrEmpty()) {
+
+            Toast.makeText(
+                this,
+                "URL bulunamadı",
+                Toast.LENGTH_LONG
+            ).show()
+
+            finish()
+            return
+        }
+
+        Toast.makeText(
+            this,
+            url,
+            Toast.LENGTH_LONG
+        ).show()
+
+        player = ExoPlayer.Builder(this).build()
 
         playerView.player = player
 
-        val mediaItem = MediaItem.fromUri(Uri.parse(url))
+        player.addListener(object : Player.Listener {
+
+            override fun onPlayerError(
+                error: PlaybackException
+            ) {
+
+                Toast.makeText(
+                    this@PlayerActivity,
+                    "Hata: ${error.errorCodeName}\n${error.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
+
+        val mediaItem =
+            MediaItem.fromUri(Uri.parse(url))
 
         player.setMediaItem(mediaItem)
 
