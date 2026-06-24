@@ -26,17 +26,15 @@ class ChannelAdapter(
         parent: ViewGroup
     ): View {
 
-        val view =
-            convertView ?: LayoutInflater
-                .from(context)
-                .inflate(
-                    R.layout.item_channel,
-                    parent,
-                    false
-                )
+        val view = convertView ?: LayoutInflater
+            .from(context)
+            .inflate(
+                R.layout.item_channel,
+                parent,
+                false
+            )
 
-        val channel =
-            channels[position]
+        val channel = channels[position]
 
         val logo =
             view.findViewById<ImageView>(
@@ -65,6 +63,8 @@ class ChannelAdapter(
             )
         }
 
+        // Kart animasyonu
+
         view.setOnClickListener {
 
             view.animate()
@@ -82,6 +82,8 @@ class ChannelAdapter(
                 .start()
         }
 
+        // Liste animasyonu
+
         val animation =
             AnimationUtils.loadAnimation(
                 context,
@@ -89,6 +91,11 @@ class ChannelAdapter(
             )
 
         view.startAnimation(animation)
+
+        // TV Kumandası / Air Mouse desteği
+
+        view.isFocusable = true
+        view.isFocusableInTouchMode = true
 
         return view
     }
