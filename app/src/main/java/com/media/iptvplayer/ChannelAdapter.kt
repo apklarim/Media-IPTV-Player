@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,11 +12,8 @@ import coil.load
 import com.media.iptvplayer.model.Channel
 
 class ChannelAdapter(
-
     context: Context,
-
     private val channels: List<Channel>
-
 ) : ArrayAdapter<Channel>(
     context,
     0,
@@ -51,13 +49,9 @@ class ChannelAdapter(
             )
 
         name.text =
-
             if (channel.isFavorite)
-
                 "⭐ ${channel.name}"
-
             else
-
                 channel.name
 
         if (channel.logo.isNotEmpty()) {
@@ -67,10 +61,34 @@ class ChannelAdapter(
         } else {
 
             logo.setImageResource(
-                android.R.drawable
-                    .ic_menu_gallery
+                android.R.drawable.ic_menu_gallery
             )
         }
+
+        view.setOnClickListener {
+
+            view.animate()
+                .scaleX(1.03f)
+                .scaleY(1.03f)
+                .setDuration(100)
+                .withEndAction {
+
+                    view.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(100)
+                        .start()
+                }
+                .start()
+        }
+
+        val animation =
+            AnimationUtils.loadAnimation(
+                context,
+                android.R.anim.fade_in
+            )
+
+        view.startAnimation(animation)
 
         return view
     }
