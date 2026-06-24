@@ -14,37 +14,53 @@ class ChannelListActivity : AppCompatActivity() {
     private var channels = mutableListOf<Channel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_channel_list)
 
-        title = "Canlı TV"
+        listView =
+            findViewById(R.id.listChannels)
 
-        listView = findViewById(R.id.listChannels)
+        val category =
+            intent.getStringExtra("CATEGORY")
+                ?: "LIVE"
 
-        // Sadece CANLI TV kanallarını göster
-        channels = ChannelRepository.channels
-            .filter {
-                it.category == "LIVE"
-            }
-            .toMutableList()
+        title = when (category) {
+
+            "MOVIES" -> "Filmler"
+
+            "SERIES" -> "Diziler"
+
+            else -> "Canlı TV"
+        }
+
+        channels =
+            ChannelRepository.channels
+                .filter {
+
+                    it.category == category
+
+                }.toMutableList()
 
         if (channels.isEmpty()) {
 
             Toast.makeText(
                 this,
-                "Canlı TV kanalı bulunamadı",
+                "İçerik bulunamadı",
                 Toast.LENGTH_LONG
             ).show()
         }
 
-        val names = channels.map { it.name }
+        val names =
+            channels.map { it.name }
 
-        listView.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            names
-        )
+        listView.adapter =
+            ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                names
+            )
 
         listView.setOnItemClickListener { _, _, position, _ ->
 
@@ -53,10 +69,12 @@ class ChannelListActivity : AppCompatActivity() {
                     this,
                     PlayerActivity::class.java
                 ).apply {
+
                     putExtra(
                         "url",
                         channels[position].url
                     )
+
                     putExtra(
                         "name",
                         channels[position].name
