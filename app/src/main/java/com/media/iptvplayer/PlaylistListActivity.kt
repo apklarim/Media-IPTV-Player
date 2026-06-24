@@ -1,16 +1,13 @@
 package com.media.iptvplayer
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class PlaylistListActivity : AppCompatActivity() {
-
-    private lateinit var listView: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -18,23 +15,31 @@ class PlaylistListActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_playlist_list)
 
-        listView = findViewById(R.id.listPlaylists)
+        val btnAdd =
+            findViewById<Button>(R.id.btnAddPlaylist)
 
-        loadPlaylists()
-    }
+        val listView =
+            findViewById<ListView>(R.id.listPlaylists)
 
-    override fun onResume() {
-        super.onResume()
-        loadPlaylists()
-    }
+        // Yeni liste ekle
+        btnAdd.setOnClickListener {
 
-    private fun loadPlaylists() {
+            startActivity(
+                Intent(
+                    this,
+                    AddPlaylistActivity::class.java
+                )
+            )
+        }
 
+        // Kayıtlı listeleri yükle
         val playlists =
             PlaylistManager.getPlaylists(this)
 
         val names =
-            playlists.map { "${it.name} (${it.type})" }
+            playlists.map {
+                "${it.name} (${it.type})"
+            }
 
         listView.adapter = ArrayAdapter(
             this,
@@ -42,62 +47,61 @@ class PlaylistListActivity : AppCompatActivity() {
             names
         )
 
-        // Normal tıklama
-
         listView.setOnItemClickListener { _, _, position, _ ->
 
-            val intent =
-                Intent(
-                    this,
-                    ChannelListActivity::class.java
-                )
+            val playlist = playlists[position]
 
-            intent.putExtra(
-                "playlistName",
-                playlists[position].name
-            )
+            when (playlist.type) {
 
-            startActivity(intent)
-        }
+                "M3U_FILE" -> {
 
-        // Uzun basma
-
-        listView.setOnItemLongClickListener { _, _, position, _ ->
-
-            AlertDialog.Builder(this)
-                .setTitle(playlists[position].name)
-                .setItems(
-                    arrayOf(
-                        "Düzenle",
-                        "Sil"
+                    startActivity(
+                        Intent(
+                            this,
+                            ChannelListActivity::class.java
+                        ).putExtra(
+                            "playlistName",
+                            playlist.name
+                        )
                     )
-                ) { _, which ->
-
-                    when (which) {
-
-                        0 -> {
-
-                            Toast.makeText(
-                                this,
-                                "Düzenleme yakında eklenecek",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                        1 -> {
-
-                            PlaylistManager.deletePlaylist(
-                                this,
-                                playlists[position].id
-                            )
-
-                            loadPlaylists()
-                        }
-                    }
                 }
-                .show()
 
-            true
+                "M3U" -> {
+
+                    startActivity(
+                        Intent(
+                            this,
+                            M3uUrlActivity::class.java
+                        )
+                    )
+                }
+
+                "XTREAM" -> {
+
+                    startActivity(
+                        Intent(
+                            this,
+                            XtreamActivity::class.java
+                        )
+                    )
+                }
+
+                else -> {
+
+                    startActivity(
+                        Intent(
+                            this,
+                            ChannelListActivity::class.java
+                        )
+                    )
+                }
+            }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        recreate()
     }
 }
