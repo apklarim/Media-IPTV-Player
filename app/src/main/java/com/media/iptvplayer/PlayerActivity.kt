@@ -11,30 +11,35 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var player: ExoPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_player)
 
-        val url = intent.getStringExtra("url") ?: return
+        val url =
+            intent.getStringExtra("url") ?: return
 
         val playerView =
             findViewById<PlayerView>(R.id.playerView)
 
-        player = ExoPlayer.Builder(this).build()
+        player = ExoPlayer.Builder(this)
+            .setSeekBackIncrementMs(10000)
+            .setSeekForwardIncrementMs(10000)
+            .build()
 
         playerView.player = player
 
-        val mediaItem = MediaItem.fromUri(url)
-
-        player.setMediaItem(mediaItem)
+        player.setMediaItem(
+            MediaItem.fromUri(url)
+        )
 
         player.prepare()
 
         player.play()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
 
         player.release()
     }
