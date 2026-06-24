@@ -8,29 +8,52 @@ object M3uParser {
 
         val channels = mutableListOf<Channel>()
 
-        val lines = content.lines()
+        val lines = content.split("\n")
 
         var currentName = ""
+        var currentGroup = ""
+        var currentLogo = ""
 
-        for (i in lines.indices) {
+        for (rawLine in lines) {
 
-            val line = lines[i].trim()
+            val line = rawLine.trim()
 
             if (line.startsWith("#EXTINF")) {
 
                 currentName =
-                    line.substringAfter(",")
+                    line.substringAfterLast(",")
 
-            } else if (
-                line.startsWith("http")
-                || line.startsWith("https")
+                currentGroup =
+                    Regex("""group-title="([^"]*)"""")
+                        .find(line)
+                        ?.groupValues
+                        ?.get(1)
+                        ?: ""
+
+                currentLogo =
+                    Regex("""tvg-logo="([^"]*)"""")
+                        .find(line)
+                        ?.groupValues
+                        ?.get(1)
+                        ?: ""
+            }
+
+            else if (
+                line.startsWith("http://")
+                || line.startsWith("https://")
             ) {
 
                 channels.add(
-
                     Channel(
-                        name = currentName,
-                        url = line
+                        name =
+                        if (currentName.isBlank())
+                            "İsimsiz Kanal"
+                        else
+                            currentName,
+
+                        url = line,
+                        logo = currentLogo,
+                        group = currentGroup
                     )
                 )
             }
@@ -38,4 +61,4 @@ object M3uParser {
 
         return channels
     }
-}
+                          }
