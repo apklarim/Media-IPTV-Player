@@ -38,38 +38,25 @@ object M3uParser {
                 line.startsWith("https://")
             ) {
 
+                val group =
+                    currentGroup.lowercase()
+
                 val category = when {
 
-                    currentGroup.contains(
-                        "film",
-                        true
-                    ) -> "MOVIES"
+                    group.contains("movie") -> "MOVIES"
+                    group.contains("film") -> "MOVIES"
+                    group.contains("vod") -> "MOVIES"
+                    group.contains("cinema") -> "MOVIES"
+                    group.contains("netflix") -> "MOVIES"
 
-                    currentGroup.contains(
-                        "movie",
-                        true
-                    ) -> "MOVIES"
-
-                    currentGroup.contains(
-                        "vod",
-                        true
-                    ) -> "MOVIES"
-
-                    currentGroup.contains(
-                        "dizi",
-                        true
-                    ) -> "SERIES"
-
-                    currentGroup.contains(
-                        "series",
-                        true
-                    ) -> "SERIES"
+                    group.contains("series") -> "SERIES"
+                    group.contains("dizi") -> "SERIES"
+                    group.contains("show") -> "SERIES"
 
                     else -> "LIVE"
                 }
 
                 channels.add(
-
                     Channel(
                         name = currentName,
                         url = line,
