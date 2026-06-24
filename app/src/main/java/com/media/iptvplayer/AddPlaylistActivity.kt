@@ -1,15 +1,19 @@
 package com.media.iptvplayer
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.media.iptvplayer.model.Playlist
 
 class AddPlaylistActivity : AppCompatActivity() {
+
+    private var playlistName = "M3U Dosyası"
 
     private val filePicker =
         registerForActivityResult(
@@ -20,7 +24,6 @@ class AddPlaylistActivity : AppCompatActivity() {
 
                 try {
 
-                    // Dosyayı oku
                     val inputStream =
                         contentResolver.openInputStream(uri)
 
@@ -28,18 +31,15 @@ class AddPlaylistActivity : AppCompatActivity() {
                         inputStream?.bufferedReader()
                             ?.use { it.readText() } ?: ""
 
-                    // Kanalları parse et
                     val channels =
                         M3uParser.parse(content)
 
-                    // Repository'ye yükle
                     ChannelRepository.channels = channels
 
-                    // Listeyi kaydet
                     PlaylistManager.addPlaylist(
                         this,
                         Playlist(
-                            name = "M3U Dosyası",
+                            name = playlistName,
                             type = "M3U_FILE",
                             url = uri.toString()
                         )
@@ -51,13 +51,14 @@ class AddPlaylistActivity : AppCompatActivity() {
                         Toast.LENGTH_LONG
                     ).show()
 
-                    // Kanal listesine git
                     startActivity(
                         Intent(
                             this,
-                            ChannelListActivity::class.java
+                            MainActivity::class.java
                         )
                     )
+
+                    finish()
 
                 } catch (e: Exception) {
 
@@ -76,7 +77,6 @@ class AddPlaylistActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_add_playlist)
 
-        // M3U URL
         findViewById<Button>(R.id.btnM3uUrl)
             .setOnClickListener {
 
@@ -88,14 +88,35 @@ class AddPlaylistActivity : AppCompatActivity() {
                 )
             }
 
-        // M3U Dosya
         findViewById<Button>(R.id.btnM3uFile)
             .setOnClickListener {
 
-                filePicker.launch("*/*")
+                val editText = EditText(this)
+
+                editText.hint = "Liste adı"
+
+                AlertDialog.Builder(this)
+                    .setTitle("Liste Adı")
+                    .setView(editText)
+
+                    .setPositiveButton("Devam") { _, _ ->
+
+                        playlistName =
+                            editText.text.toString()
+                                .ifBlank {
+                                    "M3U Dosyası"
+                                }
+
+                        filePicker.launch("*/*")
+                    }
+
+                    .setNegativeButton(
+                        "İptal",
+                        null
+                    )
+                    .show()
             }
 
-        // Xtream
         findViewById<Button>(R.id.btnXtream)
             .setOnClickListener {
 
