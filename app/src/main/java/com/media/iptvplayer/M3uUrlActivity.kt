@@ -2,10 +2,10 @@ package com.media.iptvplayer
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.media.iptvplayer.model.Playlist
@@ -20,31 +20,21 @@ class M3uUrlActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_m3u_url)
 
-        val etName =
-            findViewById<EditText>(R.id.etPlaylistName)
-
-        val etUrl =
-            findViewById<EditText>(R.id.etPlaylistUrl)
-
-        val btnSave =
-            findViewById<Button>(R.id.btnSaveM3u)
+        val etName = findViewById<EditText>(R.id.etPlaylistName)
+        val etUrl = findViewById<EditText>(R.id.etPlaylistUrl)
+        val btnSave = findViewById<Button>(R.id.btnSaveM3u)
 
         btnSave.setOnClickListener {
 
-            val name =
-                etName.text.toString().trim()
-
-            val url =
-                etUrl.text.toString().trim()
+            val name = etName.text.toString().trim()
+            val url = etUrl.text.toString().trim()
 
             if (name.isEmpty() || url.isEmpty()) {
-
                 Toast.makeText(
                     this,
                     "Lütfen tüm alanları doldurun",
                     Toast.LENGTH_SHORT
                 ).show()
-
                 return@setOnClickListener
             }
 
@@ -58,31 +48,23 @@ class M3uUrlActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    val content =
-                        withContext(Dispatchers.IO) {
-                            NetworkUtils.downloadText(url)
-                        }
+                    val content = withContext(Dispatchers.IO) {
+                        NetworkUtils.downloadText(url)
+                    }
 
-                    Log.d(
-                        "M3U_DEBUG",
-                        content.take(500)
-                    )
+                    AlertDialog.Builder(this@M3uUrlActivity)
+                        .setTitle("Sunucudan Gelen Veri")
+                        .setMessage(content.take(500))
+                        .setPositiveButton("Tamam", null)
+                        .show()
 
-                    Toast.makeText(
-                        this@M3uUrlActivity,
-                        content.take(100),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    val channels = M3uParser.parse(content)
 
-                    val channels =
-                        M3uParser.parse(content)
-
-                    ChannelRepository.channels =
-                        channels
+                    ChannelRepository.channels = channels
 
                     Toast.makeText(
                         this@M3uUrlActivity,
-                        "Bulunan kanal sayısı: ${channels.size}",
+                        "Kanal sayısı: ${channels.size}",
                         Toast.LENGTH_LONG
                     ).show()
 
@@ -109,16 +91,11 @@ class M3uUrlActivity : AppCompatActivity() {
 
                 } catch (e: Exception) {
 
-                    Toast.makeText(
-                        this@M3uUrlActivity,
-                        "Hata: ${e.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                    Log.e(
-                        "M3U_ERROR",
-                        e.toString()
-                    )
+                    AlertDialog.Builder(this@M3uUrlActivity)
+                        .setTitle("Hata")
+                        .setMessage(e.message)
+                        .setPositiveButton("Tamam", null)
+                        .show()
                 }
             }
         }
