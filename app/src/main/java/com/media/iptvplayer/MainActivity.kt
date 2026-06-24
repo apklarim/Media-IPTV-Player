@@ -13,49 +13,57 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        findViewById<Button>(R.id.cardLive)
+        // CANLI TV
+
+        findViewById<Button>(R.id.btnLiveTv)
             .setOnClickListener {
 
                 startActivity(
                     Intent(
                         this,
-                        CategoryActivity::class.java
+                        ChannelListActivity::class.java
                     ).putExtra(
-                        "category",
+                        "CATEGORY",
                         "LIVE"
                     )
                 )
             }
 
-        findViewById<Button>(R.id.cardMovies)
+        // FILMLER
+
+        findViewById<Button>(R.id.btnMovies)
             .setOnClickListener {
 
                 startActivity(
                     Intent(
                         this,
-                        CategoryActivity::class.java
+                        ChannelListActivity::class.java
                     ).putExtra(
-                        "category",
+                        "CATEGORY",
                         "MOVIES"
                     )
                 )
             }
 
-        findViewById<Button>(R.id.cardSeries)
+        // DIZILER
+
+        findViewById<Button>(R.id.btnSeries)
             .setOnClickListener {
 
                 startActivity(
                     Intent(
                         this,
-                        CategoryActivity::class.java
+                        ChannelListActivity::class.java
                     ).putExtra(
-                        "category",
+                        "CATEGORY",
                         "SERIES"
                     )
                 )
             }
 
-        findViewById<Button>(R.id.cardPlaylists)
+        // KAYITLI LISTELER
+
+        findViewById<Button>(R.id.btnPlaylists)
             .setOnClickListener {
 
                 startActivity(
@@ -66,7 +74,9 @@ class MainActivity : AppCompatActivity() {
                 )
             }
 
-        findViewById<Button>(R.id.cardSettings)
+        // AYARLAR
+
+        findViewById<Button>(R.id.btnSettings)
             .setOnClickListener {
 
                 startActivity(
