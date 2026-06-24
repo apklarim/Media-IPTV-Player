@@ -6,40 +6,36 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.media.iptvplayer.model.Channel
 
 class ChannelListActivity : AppCompatActivity() {
+
+    private lateinit var listView: ListView
+    private var channels = mutableListOf<Channel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_channel_list)
 
-        val listView =
-            findViewById<ListView>(R.id.listChannels)
+        title = "Canlı TV"
 
-        val channels = ChannelRepository.channels
+        listView = findViewById(R.id.listChannels)
 
-        Toast.makeText(
-            this,
-            "Toplam kanal: ${channels.size}",
-            Toast.LENGTH_LONG
-        ).show()
+        // Sadece CANLI TV kanallarını göster
+        channels = ChannelRepository.channels
+            .filter {
+                it.category == "LIVE"
+            }
+            .toMutableList()
 
         if (channels.isEmpty()) {
 
-            val demo = mutableListOf<String>()
-
-            for (i in 1..20) {
-                demo.add("Test Kanal $i")
-            }
-
-            listView.adapter = ArrayAdapter(
+            Toast.makeText(
                 this,
-                android.R.layout.simple_list_item_1,
-                demo
-            )
-
-            return
+                "Canlı TV kanalı bulunamadı",
+                Toast.LENGTH_LONG
+            ).show()
         }
 
         val names = channels.map { it.name }
@@ -52,17 +48,18 @@ class ChannelListActivity : AppCompatActivity() {
 
         listView.setOnItemClickListener { _, _, position, _ ->
 
-            val selectedChannel = channels[position]
-
             startActivity(
                 Intent(
                     this,
                     PlayerActivity::class.java
                 ).apply {
-
                     putExtra(
                         "url",
-                        selectedChannel.url
+                        channels[position].url
+                    )
+                    putExtra(
+                        "name",
+                        channels[position].name
                     )
                 }
             )
