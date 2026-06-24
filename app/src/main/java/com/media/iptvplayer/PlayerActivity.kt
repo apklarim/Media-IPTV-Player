@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 
 class PlayerActivity : AppCompatActivity() {
@@ -34,6 +35,11 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.player = player
 
+        // Ekranı doldur
+        playerView.resizeMode =
+            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+
+        // Kontroller
         playerView.setShowNextButton(false)
         playerView.setShowPreviousButton(false)
         playerView.setShowRewindButton(true)
