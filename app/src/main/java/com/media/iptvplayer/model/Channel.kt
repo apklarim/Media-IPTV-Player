@@ -8,5 +8,7 @@ data class Channel(
 
     val logo: String = "",
 
-    val group: String = ""
+    val group: String = "",
+
+    val category: String = "LIVE"
 )
