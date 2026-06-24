@@ -18,28 +18,55 @@ class AddPlaylistActivity : AppCompatActivity() {
 
             if (uri != null) {
 
-                PlaylistManager.addPlaylist(
-                    this,
+                try {
 
-                    Playlist(
-                        name = "M3U Dosyası",
-                        type = "M3U_FILE",
-                        url = uri.toString()
-                    )
-                )
+                    // Dosyayı oku
+                    val inputStream =
+                        contentResolver.openInputStream(uri)
 
-                Toast.makeText(
-                    this,
-                    "M3U dosyası eklendi",
-                    Toast.LENGTH_SHORT
-                ).show()
+                    val content =
+                        inputStream?.bufferedReader()
+                            ?.use { it.readText() } ?: ""
 
-                startActivity(
-                    Intent(
+                    // Kanalları parse et
+                    val channels =
+                        M3uParser.parse(content)
+
+                    // Repository'ye yükle
+                    ChannelRepository.channels = channels
+
+                    // Listeyi kaydet
+                    PlaylistManager.addPlaylist(
                         this,
-                        PlaylistListActivity::class.java
+                        Playlist(
+                            name = "M3U Dosyası",
+                            type = "M3U_FILE",
+                            url = uri.toString()
+                        )
                     )
-                )
+
+                    Toast.makeText(
+                        this,
+                        "Toplam ${channels.size} kanal bulundu",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    // Kanal listesine git
+                    startActivity(
+                        Intent(
+                            this,
+                            ChannelListActivity::class.java
+                        )
+                    )
+
+                } catch (e: Exception) {
+
+                    Toast.makeText(
+                        this,
+                        "Hata: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
 
@@ -50,7 +77,6 @@ class AddPlaylistActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_playlist)
 
         // M3U URL
-
         findViewById<Button>(R.id.btnM3uUrl)
             .setOnClickListener {
 
@@ -62,16 +88,14 @@ class AddPlaylistActivity : AppCompatActivity() {
                 )
             }
 
-        // M3U DOSYA
-
+        // M3U Dosya
         findViewById<Button>(R.id.btnM3uFile)
             .setOnClickListener {
 
                 filePicker.launch("*/*")
             }
 
-        // XTREAM
-
+        // Xtream
         findViewById<Button>(R.id.btnXtream)
             .setOnClickListener {
 
