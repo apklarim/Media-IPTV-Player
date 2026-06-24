@@ -50,7 +50,6 @@ class XtreamActivity : AppCompatActivity() {
 
                         val content =
                             withContext(Dispatchers.IO) {
-
                                 NetworkUtils.downloadText(m3uUrl)
                             }
 
@@ -78,9 +77,11 @@ class XtreamActivity : AppCompatActivity() {
                         startActivity(
                             Intent(
                                 this@XtreamActivity,
-                                ChannelListActivity::class.java
+                                MainActivity::class.java
                             )
                         )
+
+                        finish()
 
                     } catch (e: Exception) {
 
