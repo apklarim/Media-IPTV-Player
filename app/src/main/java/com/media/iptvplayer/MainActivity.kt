@@ -1,10 +1,10 @@
 package com.media.iptvplayer
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnLiveTv: Button
     private lateinit var btnMovies: Button
     private lateinit var btnSeries: Button
-    private lateinit var btnSettings: Button
+    private lateinit var btnPlaylists: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -21,10 +21,17 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        btnLiveTv = findViewById(R.id.btnLiveTv)
-        btnMovies = findViewById(R.id.btnMovies)
-        btnSeries = findViewById(R.id.btnSeries)
-        btnSettings = findViewById(R.id.btnSettings)
+        btnLiveTv =
+            findViewById(R.id.btnLiveTv)
+
+        btnMovies =
+            findViewById(R.id.btnMovies)
+
+        btnSeries =
+            findViewById(R.id.btnSeries)
+
+        btnPlaylists =
+            findViewById(R.id.btnPlaylists)
 
         btnLiveTv.setOnClickListener {
 
@@ -33,7 +40,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(
                 Intent(
                     this,
-                    PlaylistListActivity::class.java
+                    ChannelListActivity::class.java
+                ).putExtra(
+                    "CATEGORY",
+                    "LIVE"
                 )
             )
         }
@@ -42,62 +52,83 @@ class MainActivity : AppCompatActivity() {
 
             animateButton(btnMovies)
 
-            val intent = Intent(
-                this,
-                ChannelListActivity::class.java
+            startActivity(
+                Intent(
+                    this,
+                    ChannelListActivity::class.java
+                ).putExtra(
+                    "CATEGORY",
+                    "MOVIE"
+                )
             )
-
-            intent.putExtra("content_type", "movie")
-
-            startActivity(intent)
         }
 
         btnSeries.setOnClickListener {
 
             animateButton(btnSeries)
 
-            val intent = Intent(
-                this,
-                ChannelListActivity::class.java
+            startActivity(
+                Intent(
+                    this,
+                    ChannelListActivity::class.java
+                ).putExtra(
+                    "CATEGORY",
+                    "SERIES"
+                )
             )
-
-            intent.putExtra("content_type", "series")
-
-            startActivity(intent)
         }
 
-        btnSettings.setOnClickListener {
+        btnPlaylists.setOnClickListener {
 
-            animateButton(btnSettings)
+            animateButton(btnPlaylists)
 
             startActivity(
                 Intent(
                     this,
-                    SettingsActivity::class.java
+                    PlaylistListActivity::class.java
                 )
             )
         }
     }
 
-    private fun animateButton(button: Button) {
+    private fun animateButton(
+        button: Button
+    ) {
 
-        val animation =
-            AnimationUtils.loadAnimation(
-                this,
-                android.R.anim.fade_in
-            )
+        button.animate()
+            .scaleX(1.05f)
+            .scaleY(1.05f)
+            .setDuration(100)
+            .withEndAction {
 
-        button.startAnimation(animation)
+                button.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(100)
+                    .start()
+            }
+            .start()
 
         val vibrator =
-            getSystemService(VIBRATOR_SERVICE)
-                    as Vibrator
+            getSystemService(
+                VIBRATOR_SERVICE
+            ) as Vibrator
 
-        vibrator.vibrate(
-            VibrationEffect.createOneShot(
-                40,
-                VibrationEffect.DEFAULT_AMPLITUDE
+        if (Build.VERSION.SDK_INT >=
+            Build.VERSION_CODES.O) {
+
+            vibrator.vibrate(
+                VibrationEffect
+                    .createOneShot(
+                        40,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
             )
-        )
+
+        } else {
+
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(40)
+        }
     }
 }
