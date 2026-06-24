@@ -70,6 +70,12 @@ class M3uUrlActivity : AppCompatActivity() {
                         Toast.LENGTH_LONG
                     ).show()
 
+                    Toast.makeText(
+                        this@M3uUrlActivity,
+                        "İndirilen veri: ${content.take(150)}",
+                        Toast.LENGTH_LONG
+                    ).show()
+
                     val channels =
                         M3uParser.parse(content)
 
