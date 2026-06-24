@@ -2,10 +2,7 @@ package com.media.iptvplayer
 
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.ViewGroup
@@ -22,11 +19,8 @@ class ChannelListActivity : AppCompatActivity() {
     private lateinit var searchBox: EditText
     private lateinit var groupContainer: LinearLayout
 
-    private var allChannels =
-        mutableListOf<Channel>()
-
-    private var filteredChannels =
-        mutableListOf<Channel>()
+    private var allChannels = mutableListOf<Channel>()
+    private var filteredChannels = mutableListOf<Channel>()
 
     private var selectedGroup = "Tümü"
 
@@ -34,30 +28,16 @@ class ChannelListActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(
-            R.layout.activity_channel_list
-        )
+        setContentView(R.layout.activity_channel_list)
 
-        listChannels =
-            findViewById(R.id.listChannels)
+        listChannels = findViewById(R.id.listChannels)
+        searchBox = findViewById(R.id.etSearch)
+        groupContainer = findViewById(R.id.groupContainer)
 
-        searchBox =
-            findViewById(R.id.etSearch)
+        // Kategori filtresini geçici olarak kaldırıyoruz
+        // Böylece uygulama kapanmayacak
 
-        groupContainer =
-            findViewById(R.id.groupContainer)
-
-        val category =
-            intent.getStringExtra(
-                "CATEGORY"
-            ) ?: "LIVE"
-
-        allChannels =
-            ChannelRepository.channels
-                .filter {
-                    it.category == category
-                }
-                .toMutableList()
+        allChannels = ChannelRepository.channels.toMutableList()
 
         allChannels.forEach {
 
@@ -79,8 +59,7 @@ class ChannelListActivity : AppCompatActivity() {
                     start: Int,
                     count: Int,
                     after: Int
-                ) {
-                }
+                ) {}
 
                 override fun onTextChanged(
                     s: CharSequence?,
@@ -93,8 +72,7 @@ class ChannelListActivity : AppCompatActivity() {
 
                 override fun afterTextChanged(
                     s: Editable?
-                ) {
-                }
+                ) {}
             }
         )
 
@@ -105,39 +83,11 @@ class ChannelListActivity : AppCompatActivity() {
                 Intent(
                     this,
                     PlayerActivity::class.java
+                ).putExtra(
+                    "url",
+                    filteredChannels[position].url
                 )
-                    .putExtra(
-                        "url",
-                        filteredChannels[position].url
-                    )
             )
-        }
-
-        listChannels.setOnItemLongClickListener {
-                _, _, position, _ ->
-
-            FavoriteManager.toggleFavorite(
-                this,
-                filteredChannels[position].name
-            )
-
-            filteredChannels[position].isFavorite =
-                !filteredChannels[position].isFavorite
-
-            allChannels.forEach {
-
-                if (it.name ==
-                    filteredChannels[position].name
-                ) {
-
-                    it.isFavorite =
-                        filteredChannels[position].isFavorite
-                }
-            }
-
-            applyFilter()
-
-            true
         }
     }
 
@@ -153,11 +103,9 @@ class ChannelListActivity : AppCompatActivity() {
 
         groups.addAll(
             allChannels.map {
-
                 it.group.ifBlank {
                     "Diğer"
                 }
-
             }.distinct().sorted()
         )
 
@@ -166,6 +114,8 @@ class ChannelListActivity : AppCompatActivity() {
             val tv = TextView(this)
 
             tv.text = group
+            tv.textSize = 12f
+            tv.setTextColor(Color.WHITE)
 
             tv.setPadding(
                 30,
@@ -174,18 +124,11 @@ class ChannelListActivity : AppCompatActivity() {
                 15
             )
 
-            tv.textSize = 12f
-
-            tv.setTextColor(Color.WHITE)
-
             if (group == selectedGroup) {
-
                 tv.setBackgroundColor(
                     Color.parseColor("#FF9800")
                 )
-
             } else {
-
                 tv.setBackgroundColor(
                     Color.parseColor("#18C7D1")
                 )
@@ -197,56 +140,15 @@ class ChannelListActivity : AppCompatActivity() {
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
 
-            params.setMargins(
-                8,
-                8,
-                8,
-                8
-            )
+            params.setMargins(8, 8, 8, 8)
 
             tv.layoutParams = params
 
             tv.setOnClickListener {
 
-                tv.animate()
-                    .scaleX(1.15f)
-                    .scaleY(1.15f)
-                    .setDuration(100)
-                    .withEndAction {
-
-                        tv.animate()
-                            .scaleX(1f)
-                            .scaleY(1f)
-                            .setDuration(100)
-                            .start()
-                    }
-                    .start()
-
-                val vibrator =
-                    getSystemService(
-                        VIBRATOR_SERVICE
-                    ) as Vibrator
-
-                if (Build.VERSION.SDK_INT >=
-                    Build.VERSION_CODES.O) {
-
-                    vibrator.vibrate(
-                        VibrationEffect.createOneShot(
-                            30,
-                            VibrationEffect.DEFAULT_AMPLITUDE
-                        )
-                    )
-
-                } else {
-
-                    @Suppress("DEPRECATION")
-                    vibrator.vibrate(30)
-                }
-
                 selectedGroup = group
 
                 loadGroups()
-
                 applyFilter()
             }
 
@@ -264,35 +166,22 @@ class ChannelListActivity : AppCompatActivity() {
             allChannels.filter {
 
                 val groupOk =
-
                     selectedGroup == "Tümü" ||
-
-                            it.group ==
-                            selectedGroup ||
-
-                            (
-                                    selectedGroup ==
-                                            "Favoriler"
-                                            &&
-                                            it.isFavorite
-                                    )
+                            (selectedGroup == "Favoriler"
+                                    && it.isFavorite) ||
+                            it.group == selectedGroup
 
                 val searchOk =
-
                     it.name.lowercase()
                         .contains(search)
 
                 groupOk && searchOk
 
-            }
+            }.sortedByDescending {
 
-                .sortedByDescending {
+                it.isFavorite
 
-                    it.isFavorite
-
-                }
-
-                .toMutableList()
+            }.toMutableList()
 
         loadChannels()
     }
