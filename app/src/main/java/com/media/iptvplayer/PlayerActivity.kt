@@ -1,7 +1,10 @@
 package com.media.iptvplayer
 
+import android.app.PictureInPictureParams
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.util.Rational
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -16,9 +19,7 @@ class PlayerActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(
-            R.layout.activity_player
-        )
+        setContentView(R.layout.activity_player)
 
         playerView =
             findViewById(R.id.playerView)
@@ -51,6 +52,22 @@ class PlayerActivity : AppCompatActivity() {
         playerView.setShowFastForwardButton(true)
     }
 
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            val params =
+                PictureInPictureParams.Builder()
+                    .setAspectRatio(
+                        Rational(16, 9)
+                    )
+                    .build()
+
+            enterPictureInPictureMode(params)
+        }
+    }
+
     override fun onStart() {
         super.onStart()
 
@@ -62,7 +79,9 @@ class PlayerActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
-        if (::player.isInitialized) {
+        if (::player.isInitialized &&
+            !isInPictureInPictureMode) {
+
             player.pause()
         }
     }
