@@ -19,7 +19,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(
                     Intent(
                         this,
-                        AddPlaylistActivity::class.java
+                        CategoryActivity::class.java
+                    ).putExtra(
+                        "category",
+                        "LIVE"
                     )
                 )
             }
@@ -27,11 +30,29 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.cardMovies)
             .setOnClickListener {
 
+                startActivity(
+                    Intent(
+                        this,
+                        CategoryActivity::class.java
+                    ).putExtra(
+                        "category",
+                        "MOVIES"
+                    )
+                )
             }
 
         findViewById<Button>(R.id.cardSeries)
             .setOnClickListener {
 
+                startActivity(
+                    Intent(
+                        this,
+                        CategoryActivity::class.java
+                    ).putExtra(
+                        "category",
+                        "SERIES"
+                    )
+                )
             }
 
         findViewById<Button>(R.id.cardPlaylists)
