@@ -6,7 +6,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.media.iptvplayer.model.Playlist
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class XtreamActivity : AppCompatActivity() {
 
@@ -16,66 +20,77 @@ class XtreamActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_xtream)
 
-        val etName =
-            findViewById<EditText>(R.id.etXtreamName)
-
         val etServer =
             findViewById<EditText>(R.id.etServer)
 
-        val etUsername =
+        val etUser =
             findViewById<EditText>(R.id.etUsername)
 
-        val etPassword =
+        val etPass =
             findViewById<EditText>(R.id.etPassword)
 
         findViewById<Button>(R.id.btnSaveXtream)
             .setOnClickListener {
 
-                val name = etName.text.toString().trim()
-                val server = etServer.text.toString().trim()
-                val username = etUsername.text.toString().trim()
-                val password = etPassword.text.toString().trim()
+                val server =
+                    etServer.text.toString().trim()
 
-                if (name.isEmpty()
-                    || server.isEmpty()
-                    || username.isEmpty()
-                    || password.isEmpty()
-                ) {
+                val user =
+                    etUser.text.toString().trim()
 
-                    Toast.makeText(
-                        this,
-                        "Lütfen tüm alanları doldurun",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                val pass =
+                    etPass.text.toString().trim()
 
-                    return@setOnClickListener
+                val m3uUrl =
+                    "$server/get.php?username=$user&password=$pass&type=m3u_plus"
+
+                lifecycleScope.launch {
+
+                    try {
+
+                        val content =
+                            withContext(Dispatchers.IO) {
+
+                                NetworkUtils.downloadText(m3uUrl)
+                            }
+
+                        val channels =
+                            M3uParser.parse(content)
+
+                        ChannelRepository.channels =
+                            channels
+
+                        PlaylistManager.addPlaylist(
+                            this@XtreamActivity,
+                            Playlist(
+                                name = user,
+                                type = "XTREAM",
+                                url = m3uUrl
+                            )
+                        )
+
+                        Toast.makeText(
+                            this@XtreamActivity,
+                            "${channels.size} kanal bulundu",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        startActivity(
+                            Intent(
+                                this@XtreamActivity,
+                                ChannelListActivity::class.java
+                            )
+                        )
+
+                    } catch (e: Exception) {
+
+                        Toast.makeText(
+                            this@XtreamActivity,
+                            "Xtream hatası: ${e.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
-
-                PlaylistManager.addPlaylist(
-                    this,
-                    Playlist(
-                        name = name,
-                        type = "XTREAM",
-                        server = server,
-                        username = username,
-                        password = password
-                    )
-                )
-
-                Toast.makeText(
-                    this,
-                    "Xtream liste kaydedildi",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                startActivity(
-                    Intent(
-                        this,
-                        PlaylistListActivity::class.java
-                    )
-                )
-
-                finish()
             }
     }
 }
