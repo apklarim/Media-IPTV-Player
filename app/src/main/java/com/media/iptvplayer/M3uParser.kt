@@ -44,7 +44,7 @@ object M3uParser {
 
                 val category = when {
 
-                    // FILMLER
+                    // Filmler
 
                     group.contains("movie") ||
                     group.contains("movies") ||
@@ -59,9 +59,9 @@ object M3uParser {
                     group.contains("blu tv") ||
                     group.contains("gain") ->
 
-                        "MOVIES"
+                        "MOVIE"
 
-                    // DIZILER
+                    // Diziler
 
                     group.contains("series") ||
                     group.contains("serial") ||
@@ -71,7 +71,7 @@ object M3uParser {
 
                         "SERIES"
 
-                    // CANLI TV
+                    // Canlı TV
 
                     else ->
                         "LIVE"
