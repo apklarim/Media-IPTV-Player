@@ -30,6 +30,16 @@
         android:textSize="20sp"
         android:textStyle="bold"/>
 
+    <!-- 2X Butonu -->
+
+    <Button
+        android:id="@+id/btnDual"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"
+        android:text="2X"/>
+
     <!-- Önceki / Sonraki -->
 
     <LinearLayout
