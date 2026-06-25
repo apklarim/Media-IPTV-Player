@@ -45,8 +45,6 @@ class ChannelListActivity : AppCompatActivity() {
             intent.getStringExtra("CATEGORY")
                 ?: "LIVE"
 
-        // Son seçilen grubu yükle
-
         selectedGroup =
             ChannelPreferences
                 .getLastGroup(
@@ -167,11 +165,24 @@ class ChannelListActivity : AppCompatActivity() {
             )
 
         groups.addAll(
+
             allChannels.map {
+
                 it.group.ifBlank {
                     "Diğer"
                 }
-            }.distinct().sorted()
+
+            }
+                .distinct()
+                .sorted()
+                .filterNot {
+
+                    HiddenGroupsManager
+                        .isHidden(
+                            this,
+                            it
+                        )
+                }
         )
 
         groups.distinct().forEach { group ->
@@ -221,8 +232,6 @@ class ChannelListActivity : AppCompatActivity() {
 
                 selectedGroup = group
 
-                // Son seçilen grubu kaydet
-
                 ChannelPreferences
                     .saveLastGroup(
                         this,
@@ -232,6 +241,40 @@ class ChannelListActivity : AppCompatActivity() {
 
                 loadGroups()
                 applyFilter()
+            }
+
+            // Uzun basınca grup gizle
+
+            tv.setOnLongClickListener {
+
+                if (
+                    group != "Tümü"
+                    &&
+                    group != "Favoriler"
+                ) {
+
+                    HiddenGroupsManager
+                        .hideGroup(
+                            this,
+                            group
+                        )
+
+                    if (selectedGroup == group) {
+
+                        selectedGroup = "Tümü"
+                    }
+
+                    loadGroups()
+                    applyFilter()
+
+                    Toast.makeText(
+                        this,
+                        "$group gizlendi",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                true
             }
 
             groupContainer.addView(tv)
@@ -248,16 +291,20 @@ class ChannelListActivity : AppCompatActivity() {
             allChannels.filter {
 
                 val groupOk =
+
                     selectedGroup == "Tümü" ||
+
                             (
                                     selectedGroup ==
                                             "Favoriler"
                                             &&
                                             it.isFavorite
                                     ) ||
+
                             it.group == selectedGroup
 
                 val searchOk =
+
                     it.name.lowercase()
                         .contains(search)
 
