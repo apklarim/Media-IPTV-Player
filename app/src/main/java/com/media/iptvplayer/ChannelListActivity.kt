@@ -24,6 +24,7 @@ class ChannelListActivity : AppCompatActivity() {
     private var filteredChannels = mutableListOf<Channel>()
 
     private var selectedGroup = "Tümü"
+    private var currentCategory = "LIVE"
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -31,29 +32,31 @@ class ChannelListActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_channel_list)
 
-        listChannels =
-            findViewById(R.id.listChannels)
+        listChannels = findViewById(R.id.listChannels)
+        searchBox = findViewById(R.id.etSearch)
+        groupContainer = findViewById(R.id.groupContainer)
 
-        searchBox =
-            findViewById(R.id.etSearch)
-
-        groupContainer =
-            findViewById(R.id.groupContainer)
-
-        // Kategori filtresi
-
-        val category =
+        currentCategory =
             intent.getStringExtra("CATEGORY")
                 ?: "LIVE"
+
+        // Görünüm tipi
+
+        if (currentCategory == "LIVE") {
+
+            listChannels.numColumns = 1
+
+        } else {
+
+            listChannels.numColumns = 2
+        }
 
         allChannels =
             ChannelRepository.channels
                 .filter {
-                    it.category == category
+                    it.category == currentCategory
                 }
                 .toMutableList()
-
-        // Eğer kategori boş ise tüm kanalları göster
 
         if (allChannels.isEmpty()) {
 
@@ -101,8 +104,6 @@ class ChannelListActivity : AppCompatActivity() {
             }
         )
 
-        // Kanal tıklama
-
         listChannels.setOnItemClickListener {
                 _, _, position, _ ->
 
@@ -115,21 +116,16 @@ class ChannelListActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            val intent =
+            startActivity(
                 Intent(
                     this,
                     PlayerActivity::class.java
+                ).putExtra(
+                    "url",
+                    channel.url
                 )
-
-            intent.putExtra(
-                "url",
-                channel.url
             )
-
-            startActivity(intent)
         }
-
-        // Favorilere ekleme
 
         listChannels.setOnItemLongClickListener {
                 _, _, position, _ ->
@@ -141,19 +137,6 @@ class ChannelListActivity : AppCompatActivity() {
 
             filteredChannels[position].isFavorite =
                 !filteredChannels[position].isFavorite
-
-            allChannels.forEach {
-
-                if (
-                    it.name ==
-                    filteredChannels[position].name
-                ) {
-
-                    it.isFavorite =
-                        filteredChannels[position]
-                            .isFavorite
-                }
-            }
 
             applyFilter()
 
@@ -187,12 +170,7 @@ class ChannelListActivity : AppCompatActivity() {
             tv.textSize = 12f
             tv.setTextColor(Color.WHITE)
 
-            tv.setPadding(
-                30,
-                15,
-                30,
-                15
-            )
+            tv.setPadding(30, 15, 30, 15)
 
             if (group == selectedGroup) {
 
@@ -213,12 +191,7 @@ class ChannelListActivity : AppCompatActivity() {
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
 
-            params.setMargins(
-                8,
-                8,
-                8,
-                8
-            )
+            params.setMargins(8, 8, 8, 8)
 
             tv.layoutParams = params
 
@@ -244,32 +217,22 @@ class ChannelListActivity : AppCompatActivity() {
             allChannels.filter {
 
                 val groupOk =
-
                     selectedGroup == "Tümü" ||
-
-                            (
-                                    selectedGroup ==
-                                            "Favoriler"
-                                            &&
-                                            it.isFavorite
-                                    ) ||
-
+                            (selectedGroup == "Favoriler"
+                                    && it.isFavorite) ||
                             it.group == selectedGroup
 
                 val searchOk =
-
                     it.name.lowercase()
                         .contains(search)
 
                 groupOk && searchOk
 
-            }
+            }.sortedByDescending {
 
-                .sortedByDescending {
-                    it.isFavorite
-                }
+                it.isFavorite
 
-                .toMutableList()
+            }.toMutableList()
 
         loadChannels()
     }
