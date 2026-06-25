@@ -1,65 +1,248 @@
 package com.media.iptvplayer
 
-import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
+import android.content.Intent
+import android.graphics.Color
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
+import android.widget.EditText
+import android.widget.GridView
+import android.widget.LinearLayout
 import android.widget.TextView
-import coil.load
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.media.iptvplayer.model.Channel
 
-class ChannelAdapter(
-    context: Context,
-    private val channels: List<Channel>
-) : ArrayAdapter<Channel>(
-    context,
-    0,
-    channels
-) {
+class ChannelListActivity : AppCompatActivity() {
 
-    override fun getView(
-        position: Int,
-        convertView: View?,
-        parent: ViewGroup
-    ): View {
+    private lateinit var listChannels: GridView
+    private lateinit var searchBox: EditText
+    private lateinit var groupContainer: LinearLayout
 
-        val view =
-            convertView ?: LayoutInflater
-                .from(context)
-                .inflate(
-                    R.layout.item_channel,
-                    parent,
-                    false
-                )
+    private var allChannels = mutableListOf<Channel>()
+    private var filteredChannels = mutableListOf<Channel>()
 
-        val channel =
-            channels[position]
+    private var selectedGroup = "Tümü"
+    private var currentCategory = "LIVE"
 
-        val logo =
-            view.findViewById<ImageView>(
-                R.id.imgLogo
-            )
+    override fun onCreate(savedInstanceState: Bundle?) {
 
-        val name =
-            view.findViewById<TextView>(
-                R.id.txtChannelName
-            )
+        super.onCreate(savedInstanceState)
 
-        name.text = channel.name
+        setContentView(R.layout.activity_channel_list)
 
-        if (channel.logo.isNotEmpty()) {
+        listChannels = findViewById(R.id.listChannels)
+        searchBox = findViewById(R.id.etSearch)
+        groupContainer = findViewById(R.id.groupContainer)
 
-            logo.load(channel.logo)
+        currentCategory =
+            intent.getStringExtra("CATEGORY")
+                ?: "LIVE"
+
+        // Görünüm tipi
+
+        if (currentCategory == "LIVE") {
+
+            listChannels.numColumns = 1
 
         } else {
 
-            logo.setImageResource(
-                android.R.drawable.ic_menu_gallery
+            listChannels.numColumns = 2
+        }
+
+        allChannels =
+            ChannelRepository.channels
+                .filter {
+                    it.category == currentCategory
+                }
+                .toMutableList()
+
+        if (allChannels.isEmpty()) {
+
+            allChannels =
+                ChannelRepository.channels
+                    .toMutableList()
+        }
+
+        allChannels.forEach {
+
+            it.isFavorite =
+                FavoriteManager.isFavorite(
+                    this,
+                    it.name
+                )
+        }
+
+        loadGroups()
+        applyFilter()
+
+        searchBox.addTextChangedListener(
+            object : TextWatcher {
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
+                    applyFilter()
+                }
+
+                override fun afterTextChanged(
+                    s: Editable?
+                ) {
+                }
+            }
+        )
+
+        listChannels.setOnItemClickListener {
+                _, _, position, _ ->
+
+            val channel =
+                filteredChannels[position]
+
+            Toast.makeText(
+                this,
+                "Açılıyor: ${channel.name}",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            startActivity(
+                Intent(
+                    this,
+                    PlayerActivity::class.java
+                ).putExtra(
+                    "url",
+                    channel.url
+                )
             )
         }
 
-        return view
+        listChannels.setOnItemLongClickListener {
+                _, _, position, _ ->
+
+            FavoriteManager.toggleFavorite(
+                this,
+                filteredChannels[position].name
+            )
+
+            filteredChannels[position].isFavorite =
+                !filteredChannels[position].isFavorite
+
+            applyFilter()
+
+            true
+        }
+    }
+
+    private fun loadGroups() {
+
+        groupContainer.removeAllViews()
+
+        val groups =
+            mutableListOf(
+                "Tümü",
+                "Favoriler"
+            )
+
+        groups.addAll(
+            allChannels.map {
+                it.group.ifBlank {
+                    "Diğer"
+                }
+            }.distinct().sorted()
+        )
+
+        groups.distinct().forEach { group ->
+
+            val tv = TextView(this)
+
+            tv.text = group
+            tv.textSize = 12f
+            tv.setTextColor(Color.WHITE)
+
+            tv.setPadding(30, 15, 30, 15)
+
+            if (group == selectedGroup) {
+
+                tv.setBackgroundColor(
+                    Color.parseColor("#FF9800")
+                )
+
+            } else {
+
+                tv.setBackgroundColor(
+                    Color.parseColor("#18C7D1")
+                )
+            }
+
+            val params =
+                LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+
+            params.setMargins(8, 8, 8, 8)
+
+            tv.layoutParams = params
+
+            tv.setOnClickListener {
+
+                selectedGroup = group
+
+                loadGroups()
+                applyFilter()
+            }
+
+            groupContainer.addView(tv)
+        }
+    }
+
+    private fun applyFilter() {
+
+        val search =
+            searchBox.text.toString()
+                .lowercase()
+
+        filteredChannels =
+            allChannels.filter {
+
+                val groupOk =
+                    selectedGroup == "Tümü" ||
+                            (selectedGroup == "Favoriler"
+                                    && it.isFavorite) ||
+                            it.group == selectedGroup
+
+                val searchOk =
+                    it.name.lowercase()
+                        .contains(search)
+
+                groupOk && searchOk
+
+            }.sortedByDescending {
+
+                it.isFavorite
+
+            }.toMutableList()
+
+        loadChannels()
+    }
+
+    private fun loadChannels() {
+
+        listChannels.adapter =
+            ChannelAdapter(
+                this,
+                filteredChannels
+            )
     }
 }
