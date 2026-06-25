@@ -4,12 +4,15 @@ import android.content.Context
 
 object LastPlaylistManager {
 
-    private const val PREFS = "last_playlist_prefs"
-    private const val KEY_LAST_PLAYLIST_ID = "last_playlist_id"
+    private const val PREFS =
+        "last_playlist_prefs"
+
+    private const val KEY_LAST_PLAYLIST_ID =
+        "last_playlist_id"
 
     fun saveLastPlaylist(
         context: Context,
-        playlistId: String
+        playlistId: Long
     ) {
 
         context.getSharedPreferences(
@@ -17,7 +20,7 @@ object LastPlaylistManager {
             Context.MODE_PRIVATE
         )
             .edit()
-            .putString(
+            .putLong(
                 KEY_LAST_PLAYLIST_ID,
                 playlistId
             )
@@ -26,15 +29,31 @@ object LastPlaylistManager {
 
     fun getLastPlaylistId(
         context: Context
-    ): String? {
+    ): Long {
 
-        return context.getSharedPreferences(
+        return context
+            .getSharedPreferences(
+                PREFS,
+                Context.MODE_PRIVATE
+            )
+            .getLong(
+                KEY_LAST_PLAYLIST_ID,
+                -1L
+            )
+    }
+
+    fun clearLastPlaylist(
+        context: Context
+    ) {
+
+        context.getSharedPreferences(
             PREFS,
             Context.MODE_PRIVATE
         )
-            .getString(
-                KEY_LAST_PLAYLIST_ID,
-                null
+            .edit()
+            .remove(
+                KEY_LAST_PLAYLIST_ID
             )
+            .apply()
     }
 }
