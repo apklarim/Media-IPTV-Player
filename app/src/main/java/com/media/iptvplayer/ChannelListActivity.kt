@@ -41,14 +41,18 @@ class ChannelListActivity : AppCompatActivity() {
         groupContainer =
             findViewById(R.id.groupContainer)
 
-        // Kategori
-
         currentCategory =
             intent.getStringExtra("CATEGORY")
                 ?: "LIVE"
 
-        // Canlı TV tek sütun
-        // Film ve Diziler iki sütun
+        // Son seçilen grubu yükle
+
+        selectedGroup =
+            ChannelPreferences
+                .getLastGroup(
+                    this,
+                    currentCategory
+                )
 
         if (currentCategory == "LIVE") {
 
@@ -59,8 +63,6 @@ class ChannelListActivity : AppCompatActivity() {
             listChannels.numColumns = 2
         }
 
-        // Kategori filtreleme
-
         allChannels =
             ChannelRepository.channels
                 .filter {
@@ -68,16 +70,12 @@ class ChannelListActivity : AppCompatActivity() {
                 }
                 .toMutableList()
 
-        // Kategori boşsa tüm kanalları göster
-
         if (allChannels.isEmpty()) {
 
             allChannels =
                 ChannelRepository.channels
                     .toMutableList()
         }
-
-        // Favoriler
 
         allChannels.forEach {
 
@@ -118,8 +116,6 @@ class ChannelListActivity : AppCompatActivity() {
             }
         )
 
-        // Kanal tıklama
-
         listChannels.setOnItemClickListener {
                 _, _, position, _ ->
 
@@ -132,21 +128,16 @@ class ChannelListActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            val intent =
+            startActivity(
                 Intent(
                     this,
                     PlayerActivity::class.java
+                ).putExtra(
+                    "url",
+                    channel.url
                 )
-
-            intent.putExtra(
-                "url",
-                channel.url
             )
-
-            startActivity(intent)
         }
-
-        // Uzun basınca favori
 
         listChannels.setOnItemLongClickListener {
                 _, _, position, _ ->
@@ -158,19 +149,6 @@ class ChannelListActivity : AppCompatActivity() {
 
             filteredChannels[position].isFavorite =
                 !filteredChannels[position].isFavorite
-
-            allChannels.forEach {
-
-                if (
-                    it.name ==
-                    filteredChannels[position].name
-                ) {
-
-                    it.isFavorite =
-                        filteredChannels[position]
-                            .isFavorite
-                }
-            }
 
             applyFilter()
 
@@ -243,6 +221,15 @@ class ChannelListActivity : AppCompatActivity() {
 
                 selectedGroup = group
 
+                // Son seçilen grubu kaydet
+
+                ChannelPreferences
+                    .saveLastGroup(
+                        this,
+                        currentCategory,
+                        group
+                    )
+
                 loadGroups()
                 applyFilter()
             }
@@ -261,20 +248,16 @@ class ChannelListActivity : AppCompatActivity() {
             allChannels.filter {
 
                 val groupOk =
-
                     selectedGroup == "Tümü" ||
-
                             (
                                     selectedGroup ==
                                             "Favoriler"
                                             &&
                                             it.isFavorite
                                     ) ||
-
                             it.group == selectedGroup
 
                 val searchOk =
-
                     it.name.lowercase()
                         .contains(search)
 
