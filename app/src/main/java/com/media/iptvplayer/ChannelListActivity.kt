@@ -1,9 +1,11 @@
 package com.media.iptvplayer
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.EditText
@@ -32,14 +34,9 @@ class ChannelListActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_channel_list)
 
-        listChannels =
-            findViewById(R.id.listChannels)
-
-        searchBox =
-            findViewById(R.id.etSearch)
-
-        groupContainer =
-            findViewById(R.id.groupContainer)
+        listChannels = findViewById(R.id.listChannels)
+        searchBox = findViewById(R.id.etSearch)
+        groupContainer = findViewById(R.id.groupContainer)
 
         currentCategory =
             intent.getStringExtra("CATEGORY")
@@ -53,11 +50,8 @@ class ChannelListActivity : AppCompatActivity() {
                 )
 
         if (currentCategory == "LIVE") {
-
             listChannels.numColumns = 1
-
         } else {
-
             listChannels.numColumns = 2
         }
 
@@ -69,14 +63,12 @@ class ChannelListActivity : AppCompatActivity() {
                 .toMutableList()
 
         if (allChannels.isEmpty()) {
-
             allChannels =
                 ChannelRepository.channels
                     .toMutableList()
         }
 
         allChannels.forEach {
-
             it.isFavorite =
                 FavoriteManager.isFavorite(
                     this,
@@ -95,8 +87,7 @@ class ChannelListActivity : AppCompatActivity() {
                     start: Int,
                     count: Int,
                     after: Int
-                ) {
-                }
+                ) {}
 
                 override fun onTextChanged(
                     s: CharSequence?,
@@ -109,8 +100,7 @@ class ChannelListActivity : AppCompatActivity() {
 
                 override fun afterTextChanged(
                     s: Editable?
-                ) {
-                }
+                ) {}
             }
         )
 
@@ -119,12 +109,6 @@ class ChannelListActivity : AppCompatActivity() {
 
             val channel =
                 filteredChannels[position]
-
-            Toast.makeText(
-                this,
-                "Açılıyor: ${channel.name}",
-                Toast.LENGTH_SHORT
-            ).show()
 
             startActivity(
                 Intent(
@@ -204,6 +188,7 @@ class ChannelListActivity : AppCompatActivity() {
 
                 tv.setBackgroundColor(
                     Color.parseColor("#FF9800")
+
                 )
 
             } else {
@@ -230,20 +215,20 @@ class ChannelListActivity : AppCompatActivity() {
 
             tv.setOnClickListener {
 
-                selectedGroup = group
+                if (
+                    ParentalControlManager
+                        .isProtectedGroup(
+                            group
+                        )
+                ) {
 
-                ChannelPreferences
-                    .saveLastGroup(
-                        this,
-                        currentCategory,
-                        group
-                    )
+                    showPinDialog(group)
 
-                loadGroups()
-                applyFilter()
+                } else {
+
+                    openGroup(group)
+                }
             }
-
-            // Uzun basınca grup gizle
 
             tv.setOnLongClickListener {
 
@@ -259,10 +244,7 @@ class ChannelListActivity : AppCompatActivity() {
                             group
                         )
 
-                    if (selectedGroup == group) {
-
-                        selectedGroup = "Tümü"
-                    }
+                    selectedGroup = "Tümü"
 
                     loadGroups()
                     applyFilter()
@@ -279,6 +261,69 @@ class ChannelListActivity : AppCompatActivity() {
 
             groupContainer.addView(tv)
         }
+    }
+
+    private fun showPinDialog(
+        group: String
+    ) {
+
+        val input =
+            EditText(this)
+
+        input.inputType =
+            InputType.TYPE_CLASS_NUMBER or
+                    InputType.TYPE_NUMBER_VARIATION_PASSWORD
+
+        AlertDialog.Builder(this)
+            .setTitle("Şifre Gir")
+            .setView(input)
+
+            .setPositiveButton(
+                "Tamam"
+            ) { _, _ ->
+
+                if (
+                    ParentalControlManager
+                        .checkPin(
+                            input.text.toString()
+                        )
+                ) {
+
+                    openGroup(group)
+
+                } else {
+
+                    Toast.makeText(
+                        this,
+                        "Yanlış Şifre",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            .setNegativeButton(
+                "İptal",
+                null
+            )
+
+            .show()
+    }
+
+    private fun openGroup(
+        group: String
+    ) {
+
+        selectedGroup = group
+
+        ChannelPreferences
+            .saveLastGroup(
+                this,
+                currentCategory,
+                group
+            )
+
+        loadGroups()
+        applyFilter()
     }
 
     private fun applyFilter() {
