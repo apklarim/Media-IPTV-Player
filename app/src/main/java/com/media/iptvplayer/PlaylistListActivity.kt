@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
@@ -18,6 +17,8 @@ import kotlinx.coroutines.withContext
 
 class PlaylistListActivity : AppCompatActivity() {
 
+    private lateinit var listView: ListView
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -25,10 +26,14 @@ class PlaylistListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_playlist_list)
 
         val btnAdd =
-            findViewById<Button>(R.id.btnAddPlaylist)
+            findViewById<Button>(
+                R.id.btnAddPlaylist
+            )
 
-        val listView =
-            findViewById<ListView>(R.id.listPlaylists)
+        listView =
+            findViewById(
+                R.id.listPlaylists
+            )
 
         btnAdd.setOnClickListener {
 
@@ -40,19 +45,15 @@ class PlaylistListActivity : AppCompatActivity() {
             )
         }
 
-        loadPlaylists(listView)
+        loadPlaylists()
     }
 
     override fun onResume() {
         super.onResume()
-
-        val listView =
-            findViewById<ListView>(R.id.listPlaylists)
-
-        loadPlaylists(listView)
+        loadPlaylists()
     }
 
-    private fun loadPlaylists(listView: ListView) {
+    private fun loadPlaylists() {
 
         val playlists =
             PlaylistManager.getPlaylists(this)
@@ -63,15 +64,18 @@ class PlaylistListActivity : AppCompatActivity() {
                 "${it.name} (${it.type})"
             }
 
-        listView.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            names
-        )
+        // Modern kart görünümü
+
+        listView.adapter =
+            PlaylistAdapter(
+                this,
+                names
+            )
 
         // Kısa tıklama
 
-        listView.setOnItemClickListener { _, _, position, _ ->
+        listView.setOnItemClickListener {
+                _, _, position, _ ->
 
             val playlist = playlists[position]
 
@@ -90,7 +94,9 @@ class PlaylistListActivity : AppCompatActivity() {
                     if (playlist.type == "M3U_FILE") {
 
                         content =
-                            withContext(Dispatchers.IO) {
+                            withContext(
+                                Dispatchers.IO
+                            ) {
 
                                 contentResolver
                                     .openInputStream(
@@ -107,16 +113,16 @@ class PlaylistListActivity : AppCompatActivity() {
                     } else {
 
                         content =
-                            withContext(Dispatchers.IO) {
+                            withContext(
+                                Dispatchers.IO
+                            ) {
 
-                                NetworkUtils.downloadText(
-                                    playlist.url
-                                )
+                                NetworkUtils
+                                    .downloadText(
+                                        playlist.url
+                                    )
                             }
                     }
-
-                    // Yeni listeyi yükle
-                    // Eski listenin üzerine yazar
 
                     ChannelRepository.channels =
                         M3uParser.parse(content)
@@ -151,10 +157,14 @@ class PlaylistListActivity : AppCompatActivity() {
         listView.setOnItemLongClickListener {
                 _, _, position, _ ->
 
-            val playlist = playlists[position]
+            val playlist =
+                playlists[position]
 
             AlertDialog.Builder(this)
-                .setTitle(playlist.name)
+                .setTitle(
+                    playlist.name
+                )
+
                 .setItems(
                     arrayOf(
                         "Düzenle",
@@ -233,9 +243,7 @@ class PlaylistListActivity : AppCompatActivity() {
                                                 Toast.LENGTH_SHORT
                                             ).show()
 
-                                            loadPlaylists(
-                                                listView
-                                            )
+                                            loadPlaylists()
                                         }
                                     }
                                 }
@@ -252,10 +260,11 @@ class PlaylistListActivity : AppCompatActivity() {
 
                         1 -> {
 
-                            PlaylistManager.deletePlaylist(
-                                this,
-                                playlist.id
-                            )
+                            PlaylistManager
+                                .deletePlaylist(
+                                    this,
+                                    playlist.id
+                                )
 
                             Toast.makeText(
                                 this,
@@ -263,9 +272,7 @@ class PlaylistListActivity : AppCompatActivity() {
                                 Toast.LENGTH_SHORT
                             ).show()
 
-                            loadPlaylists(
-                                listView
-                            )
+                            loadPlaylists()
                         }
                     }
 
