@@ -2,6 +2,9 @@ package com.media.iptvplayer
 
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +22,9 @@ class DualPlayerActivity : AppCompatActivity() {
 
     private val channels =
         ChannelRepository.channels
+
+    private val handler =
+        Handler(Looper.getMainLooper())
 
     override fun onCreate(
         savedInstanceState: Bundle?
@@ -50,6 +56,11 @@ class DualPlayerActivity : AppCompatActivity() {
                 R.id.listChannels2
             )
 
+        // Başlangıçta listeleri gizle
+
+        list1.visibility = View.GONE
+        list2.visibility = View.GONE
+
         player1 =
             ExoPlayer.Builder(this)
                 .build()
@@ -60,6 +71,42 @@ class DualPlayerActivity : AppCompatActivity() {
 
         playerView1.player = player1
         playerView2.player = player2
+
+        // Sol player tıklanınca
+
+        playerView1.setOnClickListener {
+
+            list2.visibility = View.GONE
+
+            if (list1.visibility == View.VISIBLE) {
+
+                list1.visibility = View.GONE
+
+            } else {
+
+                list1.visibility = View.VISIBLE
+
+                autoHideList(list1)
+            }
+        }
+
+        // Sağ player tıklanınca
+
+        playerView2.setOnClickListener {
+
+            list1.visibility = View.GONE
+
+            if (list2.visibility == View.VISIBLE) {
+
+                list2.visibility = View.GONE
+
+            } else {
+
+                list2.visibility = View.VISIBLE
+
+                autoHideList(list2)
+            }
+        }
 
         val url1 =
             intent.getStringExtra(
@@ -72,12 +119,10 @@ class DualPlayerActivity : AppCompatActivity() {
             )
 
         if (!url1.isNullOrEmpty()) {
-
             playOnPlayer1(url1)
         }
 
         if (!url2.isNullOrEmpty()) {
-
             playOnPlayer2(url2)
         }
 
@@ -111,6 +156,13 @@ class DualPlayerActivity : AppCompatActivity() {
             playOnPlayer1(
                 channels[position].url
             )
+
+            handler.postDelayed({
+
+                list1.visibility =
+                    View.GONE
+
+            }, 3000)
         }
 
         list2.setOnItemClickListener {
@@ -119,7 +171,26 @@ class DualPlayerActivity : AppCompatActivity() {
             playOnPlayer2(
                 channels[position].url
             )
+
+            handler.postDelayed({
+
+                list2.visibility =
+                    View.GONE
+
+            }, 3000)
         }
+    }
+
+    private fun autoHideList(
+        list: ListView
+    ) {
+
+        handler.postDelayed({
+
+            list.visibility =
+                View.GONE
+
+        }, 5000)
     }
 
     private fun playOnPlayer1(
