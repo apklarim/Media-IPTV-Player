@@ -1,5 +1,6 @@
 package com.media.iptvplayer
 
+import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
@@ -8,9 +9,9 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -23,46 +24,82 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var channelList: ListView
     private lateinit var txtChannelName: TextView
 
-    private var channels = ChannelRepository.channels
+    private var channels =
+        ChannelRepository.channels
+
     private var currentIndex = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player)
 
-        playerView = findViewById(R.id.playerView)
-        channelList = findViewById(R.id.listChannels)
-        txtChannelName = findViewById(R.id.txtChannelName)
+        setContentView(
+            R.layout.activity_player
+        )
 
-        val btnPrev = findViewById<Button>(R.id.btnPrev)
-        val btnNext = findViewById<Button>(R.id.btnNext)
+        playerView =
+            findViewById(R.id.playerView)
 
-        val url = intent.getStringExtra("url")
+        channelList =
+            findViewById(R.id.listChannels)
 
-        currentIndex = channels.indexOfFirst {
-            it.url == url
-        }
+        txtChannelName =
+            findViewById(R.id.txtChannelName)
 
-        if (currentIndex < 0) currentIndex = 0
+        val btnPrev =
+            findViewById<Button>(R.id.btnPrev)
 
-        player = ExoPlayer.Builder(this).build()
+        val btnNext =
+            findViewById<Button>(R.id.btnNext)
 
-        player.addListener(object : Player.Listener {
+        val url =
+            intent.getStringExtra("url")
 
-            override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
-
-                Toast.makeText(
-                    this@PlayerActivity,
-                    "Player Hatası:\n${error.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+        currentIndex =
+            channels.indexOfFirst {
+                it.url == url
             }
-        })
+
+        if (currentIndex < 0)
+            currentIndex = 0
+
+        player =
+            ExoPlayer.Builder(this)
+                .build()
+
+        player.addListener(
+            object : Player.Listener {
+
+                override fun onPlayerError(
+                    error: PlaybackException
+                ) {
+
+                    AlertDialog.Builder(
+                        this@PlayerActivity
+                    )
+                        .setTitle("Player Hatası")
+                        .setMessage(
+                            "URL:\n\n" +
+                                    channels[currentIndex].url +
+                                    "\n\nHata:\n" +
+                                    error.message
+                        )
+                        .setPositiveButton(
+                            "Tamam",
+                            null
+                        )
+                        .show()
+                }
+            }
+        )
 
         playerView.player = player
+
         playerView.resizeMode =
-            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            AspectRatioFrameLayout
+                .RESIZE_MODE_ZOOM
 
         playChannel(currentIndex)
 
@@ -77,26 +114,25 @@ class PlayerActivity : AppCompatActivity() {
         loadChannelList()
     }
 
-    private fun playChannel(index: Int) {
+    private fun playChannel(
+        index: Int
+    ) {
 
-        if (index < 0 || index >= channels.size)
-            return
+        if (index < 0 ||
+            index >= channels.size
+        ) return
 
         currentIndex = index
 
-        val channel = channels[index]
+        val channel =
+            channels[index]
 
-        txtChannelName.text = channel.name
-
-        Toast.makeText(
-            this,
-            channel.url,
-            Toast.LENGTH_LONG
-        ).show()
+        txtChannelName.text =
+            channel.name
 
         val mediaItem =
             MediaItem.fromUri(
-                Uri.parse(channel.url)
+                Uri.parse(channel.url.trim())
             )
 
         player.setMediaItem(mediaItem)
@@ -114,7 +150,9 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun nextChannel() {
 
-        if (currentIndex < channels.size - 1) {
+        if (currentIndex <
+            channels.size - 1
+        ) {
             currentIndex++
             playChannel(currentIndex)
         }
@@ -126,14 +164,18 @@ class PlayerActivity : AppCompatActivity() {
             ArrayAdapter(
                 this,
                 android.R.layout.simple_list_item_1,
-                channels.map { it.name }
+                channels.map {
+                    it.name
+                }
             )
 
         channelList.setOnItemClickListener {
                 _, _, position, _ ->
 
             playChannel(position)
-            channelList.visibility = View.GONE
+
+            channelList.visibility =
+                View.GONE
         }
     }
 
@@ -158,7 +200,9 @@ class PlayerActivity : AppCompatActivity() {
             KeyEvent.KEYCODE_ENTER -> {
 
                 channelList.visibility =
-                    if (channelList.visibility == View.VISIBLE)
+                    if (channelList.visibility ==
+                        View.VISIBLE
+                    )
                         View.GONE
                     else
                         View.VISIBLE
@@ -167,7 +211,10 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
 
-        return super.onKeyDown(keyCode, event)
+        return super.onKeyDown(
+            keyCode,
+            event
+        )
     }
 
     override fun onDestroy() {
