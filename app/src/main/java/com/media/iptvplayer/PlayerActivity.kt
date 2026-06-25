@@ -1,8 +1,10 @@
 package com.media.iptvplayer
 
-import android.app.AlertDialog
+import android.app.PictureInPictureParams
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.util.Rational
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ArrayAdapter
@@ -11,8 +13,6 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
@@ -40,22 +40,34 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         playerView =
-            findViewById(R.id.playerView)
+            findViewById(
+                R.id.playerView
+            )
 
         channelList =
-            findViewById(R.id.listChannels)
+            findViewById(
+                R.id.listChannels
+            )
 
         txtChannelName =
-            findViewById(R.id.txtChannelName)
+            findViewById(
+                R.id.txtChannelName
+            )
 
         val btnPrev =
-            findViewById<Button>(R.id.btnPrev)
+            findViewById<Button>(
+                R.id.btnPrev
+            )
 
         val btnNext =
-            findViewById<Button>(R.id.btnNext)
+            findViewById<Button>(
+                R.id.btnNext
+            )
 
         val url =
-            intent.getStringExtra("url")
+            intent.getStringExtra(
+                "url"
+            )
 
         currentIndex =
             channels.indexOfFirst {
@@ -68,32 +80,6 @@ class PlayerActivity : AppCompatActivity() {
         player =
             ExoPlayer.Builder(this)
                 .build()
-
-        player.addListener(
-            object : Player.Listener {
-
-                override fun onPlayerError(
-                    error: PlaybackException
-                ) {
-
-                    AlertDialog.Builder(
-                        this@PlayerActivity
-                    )
-                        .setTitle("Player Hatası")
-                        .setMessage(
-                            "URL:\n\n" +
-                                    channels[currentIndex].url +
-                                    "\n\nHata:\n" +
-                                    error.message
-                        )
-                        .setPositiveButton(
-                            "Tamam",
-                            null
-                        )
-                        .show()
-                }
-            }
-        )
 
         playerView.player = player
 
@@ -114,9 +100,7 @@ class PlayerActivity : AppCompatActivity() {
         loadChannelList()
     }
 
-    private fun playChannel(
-        index: Int
-    ) {
+    private fun playChannel(index: Int) {
 
         if (index < 0 ||
             index >= channels.size
@@ -130,9 +114,17 @@ class PlayerActivity : AppCompatActivity() {
         txtChannelName.text =
             channel.name
 
+        PlayerPreferences
+            .saveLastChannel(
+                this,
+                channel.url
+            )
+
         val mediaItem =
             MediaItem.fromUri(
-                Uri.parse(channel.url.trim())
+                Uri.parse(
+                    channel.url.trim()
+                )
             )
 
         player.setMediaItem(mediaItem)
@@ -140,9 +132,32 @@ class PlayerActivity : AppCompatActivity() {
         player.playWhenReady = true
     }
 
+    override fun onUserLeaveHint() {
+
+        super.onUserLeaveHint()
+
+        if (Build.VERSION.SDK_INT >=
+            Build.VERSION_CODES.O
+        ) {
+
+            val params =
+                PictureInPictureParams
+                    .Builder()
+                    .setAspectRatio(
+                        Rational(16, 9)
+                    )
+                    .build()
+
+            enterPictureInPictureMode(
+                params
+            )
+        }
+    }
+
     private fun previousChannel() {
 
         if (currentIndex > 0) {
+
             currentIndex--
             playChannel(currentIndex)
         }
@@ -153,6 +168,7 @@ class PlayerActivity : AppCompatActivity() {
         if (currentIndex <
             channels.size - 1
         ) {
+
             currentIndex++
             playChannel(currentIndex)
         }
@@ -187,11 +203,13 @@ class PlayerActivity : AppCompatActivity() {
         when (keyCode) {
 
             KeyEvent.KEYCODE_DPAD_UP -> {
+
                 previousChannel()
                 return true
             }
 
             KeyEvent.KEYCODE_DPAD_DOWN -> {
+
                 nextChannel()
                 return true
             }
@@ -200,7 +218,8 @@ class PlayerActivity : AppCompatActivity() {
             KeyEvent.KEYCODE_ENTER -> {
 
                 channelList.visibility =
-                    if (channelList.visibility ==
+                    if (
+                        channelList.visibility ==
                         View.VISIBLE
                     )
                         View.GONE
