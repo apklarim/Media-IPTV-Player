@@ -25,15 +25,17 @@ class ChannelAdapter(
         parent: ViewGroup
     ): View {
 
-        val view = convertView ?: LayoutInflater
-            .from(context)
-            .inflate(
-                R.layout.item_channel,
-                parent,
-                false
-            )
+        val view =
+            convertView ?: LayoutInflater
+                .from(context)
+                .inflate(
+                    R.layout.item_channel,
+                    parent,
+                    false
+                )
 
-        val channel = channels[position]
+        val channel =
+            channels[position]
 
         val logo =
             view.findViewById<ImageView>(
