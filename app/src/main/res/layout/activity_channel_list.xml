@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#06131A">
-
-    <!-- Arama Kutusu -->
 
     <EditText
         android:id="@+id/etSearch"
@@ -15,18 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:background="#10212A"
-        android:hint="Kanal Ara..."
+        android:hint="Ara..."
         android:padding="12dp"
         android:textColor="#FFFFFF"
         android:textColorHint="#AAAAAA"/>
 
-    <!-- Gruplar -->
-
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:fillViewport="true">
+        android:scrollbars="none">
 
         <LinearLayout
             android:id="@+id/groupContainer"
@@ -37,16 +31,15 @@
 
     </HorizontalScrollView>
 
-    <!-- Kanal Listesi -->
-
-    <ListView
+    <GridView
         android:id="@+id/listChannels"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#06131A"
-        android:divider="#202020"
-        android:dividerHeight="1dp"
-        android:fastScrollEnabled="true"/>
+        android:numColumns="2"
+        android:verticalSpacing="8dp"
+        android:horizontalSpacing="8dp"
+        android:stretchMode="columnWidth"
+        android:padding="8dp"/>
 
 </LinearLayout>
