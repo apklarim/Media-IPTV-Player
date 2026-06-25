@@ -2,6 +2,7 @@ package com.media.iptvplayer
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -93,7 +94,7 @@ class PlaylistListActivity : AppCompatActivity() {
 
                                 contentResolver
                                     .openInputStream(
-                                        android.net.Uri.parse(
+                                        Uri.parse(
                                             playlist.url
                                         )
                                     )
@@ -114,14 +115,12 @@ class PlaylistListActivity : AppCompatActivity() {
                             }
                     }
 
-                    // Önce eski kanalları temizle
-
-                    ChannelRepository.channels.clear()
-
-                    // Yeni kanalları yükle
+                    // Yeni listeyi yükle
+                    // Eski listenin üzerine yazar
 
                     ChannelRepository.channels =
                         M3uParser.parse(content)
+                            .toMutableList()
 
                     Toast.makeText(
                         this@PlaylistListActivity,
