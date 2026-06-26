@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.media3.common.Player
 import android.util.Rational
 import android.view.KeyEvent
 import android.view.View
@@ -16,6 +15,8 @@ import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
@@ -47,6 +48,7 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(
             R.layout.activity_player
         )
+
         ThemeManager.applyTheme(this)
 
         playerView =
@@ -79,7 +81,7 @@ class PlayerActivity : AppCompatActivity() {
                 "url"
             )
 
-        // Ayar açıksa son izlenen kanalı aç
+        // Son kanal ayarı
 
         if (
             SettingsPreferences
@@ -112,6 +114,33 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.player = player
 
+        // ExoPlayer hata verirse VLC aç
+
+        player.addListener(
+
+            object : Player.Listener {
+
+                override fun onPlayerError(
+                    error: PlaybackException
+                ) {
+
+                    startActivity(
+
+                        Intent(
+                            this@PlayerActivity,
+                            VlcPlayerActivity::class.java
+                        )
+                            .putExtra(
+                                "url",
+                                channels[currentIndex].url
+                            )
+                    )
+
+                    finish()
+                }
+            }
+        )
+
         playerView.resizeMode =
             AspectRatioFrameLayout
                 .RESIZE_MODE_ZOOM
@@ -136,12 +165,16 @@ class PlayerActivity : AppCompatActivity() {
                 return@setOnClickListener
 
             val secondIndex =
-                if (currentIndex + 1 < channels.size)
+                if (
+                    currentIndex + 1 <
+                    channels.size
+                )
                     currentIndex + 1
                 else
                     0
 
             startActivity(
+
                 Intent(
                     this,
                     DualPlayerActivity::class.java
