@@ -1,6 +1,7 @@
 package com.media.iptvplayer
 
 import android.app.PictureInPictureParams
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -107,14 +108,36 @@ class PlayerActivity : AppCompatActivity() {
         if (currentIndex < 0)
             currentIndex = 0
 
-        // ExoPlayer + User-Agent
+        // IPTV Pro benzeri HTTP ayarları
 
         val httpDataSourceFactory =
             DefaultHttpDataSource.Factory()
                 .setUserAgent(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                    "IPTV Pro"
                 )
-                .setAllowCrossProtocolRedirects(true)
+                .setAllowCrossProtocolRedirects(
+                    true
+                )
+                .setDefaultRequestProperties(
+
+                    mapOf(
+
+                        "User-Agent" to
+                                "IPTV Pro",
+
+                        "Accept" to
+                                "*/*",
+
+                        "Connection" to
+                                "keep-alive",
+
+                        "Origin" to
+                                "https://fragrant-forest-64ee.deathlesstelenyu.workers.dev",
+
+                        "Referer" to
+                                "https://fragrant-forest-64ee.deathlesstelenyu.workers.dev/"
+                    )
+                )
 
         player =
             ExoPlayer.Builder(this)
@@ -126,8 +149,6 @@ class PlayerActivity : AppCompatActivity() {
                 .build()
 
         playerView.player = player
-
-        // Sadece hata kaydı tut
 
         player.addListener(
 
@@ -175,7 +196,7 @@ class PlayerActivity : AppCompatActivity() {
                     0
 
             startActivity(
-                android.content.Intent(
+                Intent(
                     this,
                     DualPlayerActivity::class.java
                 )
@@ -284,9 +305,14 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun showControlsTemporarily() {
 
-        btnPrev.visibility = View.VISIBLE
-        btnNext.visibility = View.VISIBLE
-        btnDual.visibility = View.VISIBLE
+        btnPrev.visibility =
+            View.VISIBLE
+
+        btnNext.visibility =
+            View.VISIBLE
+
+        btnDual.visibility =
+            View.VISIBLE
 
         if (
             !SettingsPreferences
@@ -298,9 +324,14 @@ class PlayerActivity : AppCompatActivity() {
 
         hideHandler.postDelayed({
 
-            btnPrev.visibility = View.GONE
-            btnNext.visibility = View.GONE
-            btnDual.visibility = View.GONE
+            btnPrev.visibility =
+                View.GONE
+
+            btnNext.visibility =
+                View.GONE
+
+            btnDual.visibility =
+                View.GONE
 
         }, 4000)
     }
@@ -338,11 +369,13 @@ class PlayerActivity : AppCompatActivity() {
         when (keyCode) {
 
             KeyEvent.KEYCODE_DPAD_UP -> {
+
                 previousChannel()
                 return true
             }
 
             KeyEvent.KEYCODE_DPAD_DOWN -> {
+
                 nextChannel()
                 return true
             }
