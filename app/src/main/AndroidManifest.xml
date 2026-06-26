@@ -13,10 +13,6 @@
         android:theme="@style/Theme.MediaIPTVPlayer">
 
         <activity
-    android:name=".VlcPlayerActivity"
-    android:screenOrientation="landscape"/>
-
-        <activity
             android:name=".SplashActivity"
             android:exported="true">
 
