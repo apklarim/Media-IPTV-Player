@@ -16,20 +16,6 @@
         app:show_timeout="3000"
         app:use_controller="true"/>
 
-    <!-- Kanal Adı -->
-
-    <TextView
-        android:id="@+id/txtChannelName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="#80000000"
-        android:padding="10dp"
-        android:text="Kanal"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
-
     <!-- 2X Butonu -->
 
     <Button
