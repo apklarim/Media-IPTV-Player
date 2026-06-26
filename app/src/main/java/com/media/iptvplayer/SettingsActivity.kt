@@ -3,11 +3,16 @@ package com.media.iptvplayer
 import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var btnAbout: Button
+
+    private lateinit var switchAutoHide: Switch
+    private lateinit var switchLastPlaylist: Switch
+    private lateinit var switchLastChannel: Switch
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -21,6 +26,39 @@ class SettingsActivity : AppCompatActivity() {
             findViewById(
                 R.id.btnAbout
             )
+
+        switchAutoHide =
+            findViewById(
+                R.id.switchAutoHide
+            )
+
+        switchLastPlaylist =
+            findViewById(
+                R.id.switchLastPlaylist
+            )
+
+        switchLastChannel =
+            findViewById(
+                R.id.switchLastChannel
+            )
+
+        // Kayıtlı ayarı yükle
+
+        switchAutoHide.isChecked =
+            SettingsPreferences
+                .isAutoHideEnabled(this)
+
+        // Ayarı kaydet
+
+        switchAutoHide.setOnCheckedChangeListener {
+                _, isChecked ->
+
+            SettingsPreferences
+                .setAutoHideEnabled(
+                    this,
+                    isChecked
+                )
+        }
 
         btnAbout.setOnClickListener {
 
