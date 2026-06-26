@@ -128,9 +128,9 @@ class PlaylistListActivity : AppCompatActivity() {
                             }
                     }
 
-                    ChannelRepository.channels =
-                        M3uParser.parse(content)
-                            .toMutableList()
+ChannelRepository.setChannels(
+    M3uParser.parse(content)
+)
 
                     Toast.makeText(
                         this@PlaylistListActivity,
