@@ -115,16 +115,12 @@ class PlayerActivity : AppCompatActivity() {
                 return@setOnClickListener
 
             val secondIndex =
-                if (
-                    currentIndex + 1 <
-                    channels.size
-                )
+                if (currentIndex + 1 < channels.size)
                     currentIndex + 1
                 else
                     0
 
             startActivity(
-
                 Intent(
                     this,
                     DualPlayerActivity::class.java
@@ -242,6 +238,16 @@ class PlayerActivity : AppCompatActivity() {
         btnDual.visibility =
             View.VISIBLE
 
+        // Ayarlarda otomatik gizleme kapalıysa
+        // butonlar sürekli görünür
+
+        if (
+            !SettingsPreferences
+                .isAutoHideEnabled(this)
+        ) {
+            return
+        }
+
         hideHandler
             .removeCallbacksAndMessages(null)
 
@@ -326,8 +332,6 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-
-        super.onDestroy()
 
         hideHandler
             .removeCallbacksAndMessages(null)
