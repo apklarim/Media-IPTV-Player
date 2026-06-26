@@ -46,6 +46,7 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(
             R.layout.activity_player
         )
+        ThemeManager.applyTheme(this)
 
         playerView =
             findViewById(
