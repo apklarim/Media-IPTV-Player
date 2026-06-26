@@ -80,7 +80,7 @@ dependencies {
     implementation 'androidx.media3:media3-exoplayer-hls:1.8.0'
 
     // LibVLC
-    implementation 'org.videolan.android:libvlc-all:3.6.0-eap15'
+    implementation 'org.videolan.android:libvlc-all:3.5.1'
 
     // Kanal logoları
     implementation 'io.coil-kt:coil:2.7.0'
