@@ -131,7 +131,7 @@
 
         </LinearLayout>
 
-        <!-- LİSTELER -->
+        <!-- KAYITLI LİSTELER -->
 
         <LinearLayout
             android:id="@+id/btnPlaylists"
@@ -156,6 +156,37 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="KAYITLI LİSTELER"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <!-- AYARLAR -->
+
+        <LinearLayout
+            android:id="@+id/btnSettings"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/focus_selector"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚙️"
+                android:textSize="32sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="AYARLAR"
                 android:textColor="#FFFFFF"
                 android:textSize="22sp"
                 android:textStyle="bold"/>
