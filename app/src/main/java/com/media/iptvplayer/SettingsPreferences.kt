@@ -10,6 +10,9 @@ object SettingsPreferences {
     private const val AUTO_HIDE =
         "auto_hide"
 
+    private const val AUTO_LOAD_LAST_PLAYLIST =
+        "auto_load_last_playlist"
+
     fun setAutoHideEnabled(
         context: Context,
         enabled: Boolean
@@ -38,6 +41,38 @@ object SettingsPreferences {
             )
             .getBoolean(
                 AUTO_HIDE,
+                true
+            )
+    }
+
+    fun setAutoLoadLastPlaylistEnabled(
+        context: Context,
+        enabled: Boolean
+    ) {
+
+        context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .putBoolean(
+                AUTO_LOAD_LAST_PLAYLIST,
+                enabled
+            )
+            .apply()
+    }
+
+    fun isAutoLoadLastPlaylistEnabled(
+        context: Context
+    ): Boolean {
+
+        return context
+            .getSharedPreferences(
+                PREFS,
+                Context.MODE_PRIVATE
+            )
+            .getBoolean(
+                AUTO_LOAD_LAST_PLAYLIST,
                 true
             )
     }
