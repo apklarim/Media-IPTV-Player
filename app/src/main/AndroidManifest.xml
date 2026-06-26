@@ -1,71 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission
+        android:name="android.permission.INTERNET"/>
+
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="Media IPTV Player"
-        android:icon="@drawable/ic_media_logo"
-        android:roundIcon="@drawable/ic_media_logo"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.MediaIPTVPlayer">
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
         <activity
-            android:name=".SplashActivity"
-            android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category
-                    android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-
-        </activity>
+            android:name=".SettingsActivity"/>
 
         <activity
-            android:name=".MainActivity"
-            android:exported="false"/>
+            android:name=".HiddenGroupsActivity"/>
 
         <activity
-            android:name=".SettingsActivity"
-            android:exported="false"/>
+            android:name=".PlaylistListActivity"/>
 
         <activity
             android:name=".DualPlayerActivity"
-            android:exported="false"/>
-
-        <activity
-            android:name=".HiddenGroupsActivity"
-            android:exported="false"/>
+            android:screenOrientation="landscape"/>
 
         <activity
             android:name=".PlayerActivity"
-            android:exported="false"
-            android:supportsPictureInPicture="true"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"/>
+            android:screenOrientation="landscape"/>
 
         <activity
-            android:name=".ChannelListActivity"
-            android:exported="false"/>
+            android:name=".ChannelListActivity"/>
 
         <activity
-            android:name=".PlaylistListActivity"
-            android:exported="false"/>
+            android:name=".MainActivity"
+            android:exported="true">
 
-        <activity
-            android:name=".AddPlaylistActivity"
-            android:exported="false"/>
+            <intent-filter>
 
-        <activity
-            android:name=".M3uUrlActivity"
-            android:exported="false"/>
+                <action
+                    android:name="android.intent.action.MAIN"/>
 
-        <activity
-            android:name=".XtreamActivity"
-            android:exported="false"/>
+                <category
+                    android:name="android.intent.category.LAUNCHER"/>
+
+            </intent-filter>
+
+        </activity>
 
     </application>
 
