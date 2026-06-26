@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Rational
 import android.view.KeyEvent
 import android.view.View
@@ -22,6 +24,13 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var player: ExoPlayer
     private lateinit var playerView: PlayerView
     private lateinit var channelList: ListView
+
+    private lateinit var btnPrev: Button
+    private lateinit var btnNext: Button
+    private lateinit var btnDual: Button
+
+    private val hideHandler =
+        Handler(Looper.getMainLooper())
 
     private var channels =
         ChannelRepository.channels
@@ -48,18 +57,18 @@ class PlayerActivity : AppCompatActivity() {
                 R.id.listChannels
             )
 
-        val btnPrev =
-            findViewById<Button>(
+        btnPrev =
+            findViewById(
                 R.id.btnPrev
             )
 
-        val btnNext =
-            findViewById<Button>(
+        btnNext =
+            findViewById(
                 R.id.btnNext
             )
 
-        val btnDual =
-            findViewById<Button>(
+        btnDual =
+            findViewById(
                 R.id.btnDual
             )
 
@@ -89,14 +98,16 @@ class PlayerActivity : AppCompatActivity() {
         playChannel(currentIndex)
 
         btnPrev.setOnClickListener {
+
             previousChannel()
+            showControlsTemporarily()
         }
 
         btnNext.setOnClickListener {
-            nextChannel()
-        }
 
-        // 2X Dual Player
+            nextChannel()
+            showControlsTemporarily()
+        }
 
         btnDual.setOnClickListener {
 
@@ -129,7 +140,14 @@ class PlayerActivity : AppCompatActivity() {
             )
         }
 
+        playerView.setOnClickListener {
+
+            showControlsTemporarily()
+        }
+
         loadChannelList()
+
+        showControlsTemporarily()
     }
 
     private fun playChannel(
@@ -165,29 +183,6 @@ class PlayerActivity : AppCompatActivity() {
 
         player.prepare()
         player.playWhenReady = true
-    }
-
-    override fun onUserLeaveHint() {
-
-        super.onUserLeaveHint()
-
-        if (
-            Build.VERSION.SDK_INT >=
-            Build.VERSION_CODES.O
-        ) {
-
-            val params =
-                PictureInPictureParams
-                    .Builder()
-                    .setAspectRatio(
-                        Rational(16, 9)
-                    )
-                    .build()
-
-            enterPictureInPictureMode(
-                params
-            )
-        }
     }
 
     private fun previousChannel() {
@@ -231,6 +226,59 @@ class PlayerActivity : AppCompatActivity() {
 
             channelList.visibility =
                 View.GONE
+
+            showControlsTemporarily()
+        }
+    }
+
+    private fun showControlsTemporarily() {
+
+        btnPrev.visibility =
+            View.VISIBLE
+
+        btnNext.visibility =
+            View.VISIBLE
+
+        btnDual.visibility =
+            View.VISIBLE
+
+        hideHandler
+            .removeCallbacksAndMessages(null)
+
+        hideHandler.postDelayed({
+
+            btnPrev.visibility =
+                View.GONE
+
+            btnNext.visibility =
+                View.GONE
+
+            btnDual.visibility =
+                View.GONE
+
+        }, 4000)
+    }
+
+    override fun onUserLeaveHint() {
+
+        super.onUserLeaveHint()
+
+        if (
+            Build.VERSION.SDK_INT >=
+            Build.VERSION_CODES.O
+        ) {
+
+            val params =
+                PictureInPictureParams
+                    .Builder()
+                    .setAspectRatio(
+                        Rational(16, 9)
+                    )
+                    .build()
+
+            enterPictureInPictureMode(
+                params
+            )
         }
     }
 
@@ -238,6 +286,8 @@ class PlayerActivity : AppCompatActivity() {
         keyCode: Int,
         event: KeyEvent?
     ): Boolean {
+
+        showControlsTemporarily()
 
         when (keyCode) {
 
@@ -279,9 +329,14 @@ class PlayerActivity : AppCompatActivity() {
 
         super.onDestroy()
 
+        hideHandler
+            .removeCallbacksAndMessages(null)
+
         if (::player.isInitialized) {
 
             player.release()
         }
+
+        super.onDestroy()
     }
 }
