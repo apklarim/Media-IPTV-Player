@@ -34,9 +34,13 @@ class DualPlayerActivity : AppCompatActivity() {
     private var currentUrl1 = ""
     private var currentUrl2 = ""
 
-    private var selectedPlayer = 1
+    // Güncel kanalları Activity açılırken kopyala
+    private val channels = ArrayList(
+        ChannelRepository.channels
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_dual_player)
@@ -75,51 +79,66 @@ class DualPlayerActivity : AppCompatActivity() {
         if (currentUrl2.isNotEmpty())
             playOnPlayer2(currentUrl2)
 
-        val names =
-            ChannelRepository.channels.map { it.name }
-
+        // DEBUG
         Toast.makeText(
             this,
-            "2X Kanal Sayısı: ${names.size}",
+            "2X Kanal Sayısı: ${channels.size}",
             Toast.LENGTH_LONG
         ).show()
 
-        list1.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            names
-        )
+        val names =
+            channels.map { it.name }
 
-        list2.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            names
-        )
+        list1.adapter =
+            ArrayAdapter(
+                this,
+                R.layout.item_dual_channel,
+                names
+            )
 
-        list1.setOnItemClickListener { _, _, position, _ ->
-            currentUrl1 =
-                ChannelRepository.channels[position].url
+        list2.adapter =
+            ArrayAdapter(
+                this,
+                R.layout.item_dual_channel,
+                names
+            )
 
-            playOnPlayer1(currentUrl1)
+        list1.setOnItemClickListener {
+                _, _, position, _ ->
 
-            handler.postDelayed({
-                list1.visibility = View.GONE
-            }, 2000)
+            if (position < channels.size) {
+
+                currentUrl1 =
+                    channels[position].url
+
+                playOnPlayer1(currentUrl1)
+
+                handler.postDelayed({
+                    list1.visibility = View.GONE
+                }, 2000)
+            }
         }
 
-        list2.setOnItemClickListener { _, _, position, _ ->
-            currentUrl2 =
-                ChannelRepository.channels[position].url
+        list2.setOnItemClickListener {
+                _, _, position, _ ->
 
-            playOnPlayer2(currentUrl2)
+            if (position < channels.size) {
 
-            handler.postDelayed({
-                list2.visibility = View.GONE
-            }, 2000)
+                currentUrl2 =
+                    channels[position].url
+
+                playOnPlayer2(currentUrl2)
+
+                handler.postDelayed({
+                    list2.visibility = View.GONE
+                }, 2000)
+            }
         }
 
         playerView1.setOnClickListener {
+
             list2.visibility = View.GONE
+
             list1.visibility =
                 if (list1.visibility == View.VISIBLE)
                     View.GONE
@@ -128,7 +147,9 @@ class DualPlayerActivity : AppCompatActivity() {
         }
 
         playerView2.setOnClickListener {
+
             list1.visibility = View.GONE
+
             list2.visibility =
                 if (list2.visibility == View.VISIBLE)
                     View.GONE
@@ -138,12 +159,17 @@ class DualPlayerActivity : AppCompatActivity() {
     }
 
     private fun updateOrientation() {
-        if (resources.configuration.orientation ==
+
+        if (
+            resources.configuration.orientation ==
             Configuration.ORIENTATION_LANDSCAPE
         ) {
+
             rootLayout.orientation =
                 LinearLayout.HORIZONTAL
+
         } else {
+
             rootLayout.orientation =
                 LinearLayout.VERTICAL
         }
@@ -152,30 +178,44 @@ class DualPlayerActivity : AppCompatActivity() {
     override fun onConfigurationChanged(
         newConfig: Configuration
     ) {
+
         super.onConfigurationChanged(newConfig)
+
         updateOrientation()
     }
 
     private fun playOnPlayer1(url: String) {
+
         player1.stop()
+
         player1.setMediaItem(
-            MediaItem.fromUri(Uri.parse(url))
+            MediaItem.fromUri(
+                Uri.parse(url)
+            )
         )
+
         player1.prepare()
         player1.playWhenReady = true
     }
 
     private fun playOnPlayer2(url: String) {
+
         player2.stop()
+
         player2.setMediaItem(
-            MediaItem.fromUri(Uri.parse(url))
+            MediaItem.fromUri(
+                Uri.parse(url)
+            )
         )
+
         player2.prepare()
         player2.playWhenReady = true
     }
 
     override fun onDestroy() {
+
         super.onDestroy()
+
         player1.release()
         player2.release()
     }
