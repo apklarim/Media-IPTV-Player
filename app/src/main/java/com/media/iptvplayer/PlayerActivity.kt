@@ -121,8 +121,7 @@ class PlayerActivity : AppCompatActivity() {
                 return@setOnClickListener
 
             // Güncel kanal listesini 2X Player'a aktar
-            ChannelRepository.channels =
-                channels.toMutableList()
+            ChannelRepository.setChannels(channels)
 
             val secondIndex =
                 if (currentIndex + 1 < channels.size)
