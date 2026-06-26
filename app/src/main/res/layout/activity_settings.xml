@@ -25,7 +25,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@android:drawable/ic_media_previous"
-                android:tint="#FFFFFF" />
+                android:tint="#FFFFFF"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
                 android:text="Ayarlar"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
@@ -47,7 +47,7 @@
             android:paddingStart="30dp"
             android:text="⚙ Genel"
             android:textColor="#00BCD4"
-            android:textSize="24sp" />
+            android:textSize="24sp"/>
 
         <Switch
             android:id="@+id/switchLastPlaylist"
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:text="Son Listeyi Otomatik Aç"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"/>
 
         <Switch
             android:id="@+id/switchLastChannel"
@@ -63,12 +63,57 @@
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:text="Son Kanalı Otomatik Aç"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#303030" />
+            android:background="#303030"/>
+
+        <!-- Tema -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:gravity="center_vertical"
+            android:paddingStart="30dp"
+            android:text="🎨 Tema"
+            android:textColor="#00BCD4"
+            android:textSize="24sp"/>
+
+        <RadioGroup
+            android:id="@+id/themeGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <RadioButton
+                android:id="@+id/radioDark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Koyu Tema"
+                android:textColor="#FFFFFF"/>
+
+            <RadioButton
+                android:id="@+id/radioTurquoise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Turkuaz Tema"
+                android:textColor="#FFFFFF"/>
+
+            <RadioButton
+                android:id="@+id/radioBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mavi Tema"
+                android:textColor="#FFFFFF"/>
+
+        </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#303030"/>
 
         <!-- Video -->
 
@@ -79,7 +124,7 @@
             android:paddingStart="30dp"
             android:text="▶ Video"
             android:textColor="#00BCD4"
-            android:textSize="24sp" />
+            android:textSize="24sp"/>
 
         <Switch
             android:id="@+id/switchAutoHide"
@@ -87,44 +132,12 @@
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:text="Player Butonlarını Otomatik Gizle"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#303030" />
-
-        <!-- Kullanıcı Arayüzü -->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:gravity="center_vertical"
-            android:paddingStart="30dp"
-            android:text="🖥 Kullanıcı Arayüzü"
-            android:textColor="#00BCD4"
-            android:textSize="24sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#303030" />
-
-        <!-- Gelişmiş -->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:gravity="center_vertical"
-            android:paddingStart="30dp"
-            android:text="🛠 Gelişmiş"
-            android:textColor="#00BCD4"
-            android:textSize="24sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#303030" />
+            android:background="#303030"/>
 
         <!-- Hakkında -->
 
@@ -135,7 +148,7 @@
             android:paddingStart="30dp"
             android:text="ℹ Hakkında"
             android:textColor="#00BCD4"
-            android:textSize="24sp" />
+            android:textSize="24sp"/>
 
         <Button
             android:id="@+id/btnAbout"
@@ -144,12 +157,7 @@
             android:layout_margin="16dp"
             android:background="@drawable/focus_selector"
             android:text="Media IPTV Player Hakkında"
-            android:textColor="#FFFFFF" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#303030" />
+            android:textColor="#FFFFFF"/>
 
     </LinearLayout>
 
