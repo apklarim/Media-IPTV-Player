@@ -54,10 +54,29 @@ object ThemeManager {
                 Color.parseColor("#00E5FF")
 
             ThemePreferences.THEME_BLUE ->
-                Color.parseColor("#2979FF")
+                Color.parseColor("#448AFF")
 
             else ->
                 Color.parseColor("#00BCD4")
+        }
+    }
+
+    fun getCardColor(
+        activity: Activity
+    ): Int {
+
+        return when (
+            ThemePreferences.getTheme(activity)
+        ) {
+
+            ThemePreferences.THEME_TURQUOISE ->
+                Color.parseColor("#10232B")
+
+            ThemePreferences.THEME_BLUE ->
+                Color.parseColor("#12203A")
+
+            else ->
+                Color.parseColor("#222222")
         }
     }
 }
