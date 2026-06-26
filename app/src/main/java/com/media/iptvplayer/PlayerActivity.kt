@@ -72,10 +72,29 @@ class PlayerActivity : AppCompatActivity() {
                 R.id.btnDual
             )
 
-        val url =
+        var url =
             intent.getStringExtra(
                 "url"
             )
+
+        // Ayar açıksa son izlenen kanalı aç
+
+        if (
+            SettingsPreferences
+                .isAutoLoadLastChannelEnabled(this)
+        ) {
+
+            val lastChannelUrl =
+                PlayerPreferences
+                    .getLastChannel(this)
+
+            if (
+                !lastChannelUrl.isNullOrEmpty()
+            ) {
+
+                url = lastChannelUrl
+            }
+        }
 
         currentIndex =
             channels.indexOfFirst {
@@ -237,9 +256,6 @@ class PlayerActivity : AppCompatActivity() {
 
         btnDual.visibility =
             View.VISIBLE
-
-        // Ayarlarda otomatik gizleme kapalıysa
-        // butonlar sürekli görünür
 
         if (
             !SettingsPreferences
