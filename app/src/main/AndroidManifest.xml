@@ -30,6 +30,10 @@
             android:exported="false"/>
 
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false"/>
+
+        <activity
             android:name=".DualPlayerActivity"
             android:exported="false"/>
 
