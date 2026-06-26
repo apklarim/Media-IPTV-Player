@@ -41,61 +41,31 @@ class PlayerActivity : AppCompatActivity() {
 
     private var currentIndex = 0
 
-    override fun onCreate(
-        savedInstanceState: Bundle?
-    ) {
+    override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(
-            R.layout.activity_player
-        )
+        setContentView(R.layout.activity_player)
 
         ThemeManager.applyTheme(this)
 
-        playerView =
-            findViewById(
-                R.id.playerView
-            )
+        playerView = findViewById(R.id.playerView)
+        channelList = findViewById(R.id.listChannels)
 
-        channelList =
-            findViewById(
-                R.id.listChannels
-            )
+        btnPrev = findViewById(R.id.btnPrev)
+        btnNext = findViewById(R.id.btnNext)
+        btnDual = findViewById(R.id.btnDual)
 
-        btnPrev =
-            findViewById(
-                R.id.btnPrev
-            )
+        var url = intent.getStringExtra("url")
 
-        btnNext =
-            findViewById(
-                R.id.btnNext
-            )
-
-        btnDual =
-            findViewById(
-                R.id.btnDual
-            )
-
-        var url =
-            intent.getStringExtra(
-                "url"
-            )
-
-        if (
-            SettingsPreferences
+        if (SettingsPreferences
                 .isAutoLoadLastChannelEnabled(this)
         ) {
 
             val lastChannelUrl =
-                PlayerPreferences
-                    .getLastChannel(this)
+                PlayerPreferences.getLastChannel(this)
 
-            if (
-                !lastChannelUrl.isNullOrEmpty()
-            ) {
-
+            if (!lastChannelUrl.isNullOrEmpty()) {
                 url = lastChannelUrl
             }
         }
@@ -108,34 +78,20 @@ class PlayerActivity : AppCompatActivity() {
         if (currentIndex < 0)
             currentIndex = 0
 
-        // IPTV Pro benzeri HTTP ayarları
+        // IPTV Pro User-Agent
+
+        val userAgent =
+            "Mozilla/5.0 (Linux; Android 16; samsung SM-X110 Build/BP2A.250605.031.A3) IPTV Pro/9.1.18"
 
         val httpDataSourceFactory =
             DefaultHttpDataSource.Factory()
-                .setUserAgent(
-                    "IPTV Pro"
-                )
-                .setAllowCrossProtocolRedirects(
-                    true
-                )
+                .setUserAgent(userAgent)
+                .setAllowCrossProtocolRedirects(true)
                 .setDefaultRequestProperties(
-
                     mapOf(
-
-                        "User-Agent" to
-                                "IPTV Pro",
-
-                        "Accept" to
-                                "*/*",
-
-                        "Connection" to
-                                "keep-alive",
-
-                        "Origin" to
-                                "https://fragrant-forest-64ee.deathlesstelenyu.workers.dev",
-
-                        "Referer" to
-                                "https://fragrant-forest-64ee.deathlesstelenyu.workers.dev/"
+                        "User-Agent" to userAgent,
+                        "Accept" to "*/*",
+                        "Connection" to "keep-alive"
                     )
                 )
 
@@ -151,7 +107,6 @@ class PlayerActivity : AppCompatActivity() {
         playerView.player = player
 
         player.addListener(
-
             object : Player.Listener {
 
                 override fun onPlayerError(
@@ -164,8 +119,7 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         playerView.resizeMode =
-            AspectRatioFrameLayout
-                .RESIZE_MODE_ZOOM
+            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
         playChannel(currentIndex)
 
@@ -187,10 +141,7 @@ class PlayerActivity : AppCompatActivity() {
                 return@setOnClickListener
 
             val secondIndex =
-                if (
-                    currentIndex + 1 <
-                    channels.size
-                )
+                if (currentIndex + 1 < channels.size)
                     currentIndex + 1
                 else
                     0
@@ -221,25 +172,19 @@ class PlayerActivity : AppCompatActivity() {
         showControlsTemporarily()
     }
 
-    private fun playChannel(
-        index: Int
-    ) {
+    private fun playChannel(index: Int) {
 
-        if (
-            index < 0 ||
-            index >= channels.size
-        ) return
+        if (index < 0 || index >= channels.size)
+            return
 
         currentIndex = index
 
-        val channel =
-            channels[index]
+        val channel = channels[index]
 
-        PlayerPreferences
-            .saveLastChannel(
-                this,
-                channel.url
-            )
+        PlayerPreferences.saveLastChannel(
+            this,
+            channel.url
+        )
 
         val mediaItem =
             MediaItem.fromUri(
@@ -248,9 +193,7 @@ class PlayerActivity : AppCompatActivity() {
                 )
             )
 
-        player.setMediaItem(
-            mediaItem
-        )
+        player.setMediaItem(mediaItem)
 
         player.prepare()
 
@@ -269,10 +212,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun nextChannel() {
 
-        if (
-            currentIndex <
-            channels.size - 1
-        ) {
+        if (currentIndex < channels.size - 1) {
 
             currentIndex++
 
@@ -286,9 +226,7 @@ class PlayerActivity : AppCompatActivity() {
             ArrayAdapter(
                 this,
                 android.R.layout.simple_list_item_1,
-                channels.map {
-                    it.name
-                }
+                channels.map { it.name }
             )
 
         channelList.setOnItemClickListener {
@@ -296,8 +234,7 @@ class PlayerActivity : AppCompatActivity() {
 
             playChannel(position)
 
-            channelList.visibility =
-                View.GONE
+            channelList.visibility = View.GONE
 
             showControlsTemporarily()
         }
@@ -305,33 +242,21 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun showControlsTemporarily() {
 
-        btnPrev.visibility =
-            View.VISIBLE
+        btnPrev.visibility = View.VISIBLE
+        btnNext.visibility = View.VISIBLE
+        btnDual.visibility = View.VISIBLE
 
-        btnNext.visibility =
-            View.VISIBLE
-
-        btnDual.visibility =
-            View.VISIBLE
-
-        if (
-            !SettingsPreferences
+        if (!SettingsPreferences
                 .isAutoHideEnabled(this)
         ) return
 
-        hideHandler
-            .removeCallbacksAndMessages(null)
+        hideHandler.removeCallbacksAndMessages(null)
 
         hideHandler.postDelayed({
 
-            btnPrev.visibility =
-                View.GONE
-
-            btnNext.visibility =
-                View.GONE
-
-            btnDual.visibility =
-                View.GONE
+            btnPrev.visibility = View.GONE
+            btnNext.visibility = View.GONE
+            btnDual.visibility = View.GONE
 
         }, 4000)
     }
@@ -340,8 +265,7 @@ class PlayerActivity : AppCompatActivity() {
 
         super.onUserLeaveHint()
 
-        if (
-            Build.VERSION.SDK_INT >=
+        if (Build.VERSION.SDK_INT >=
             Build.VERSION_CODES.O
         ) {
 
@@ -353,9 +277,7 @@ class PlayerActivity : AppCompatActivity() {
                     )
                     .build()
 
-            enterPictureInPictureMode(
-                params
-            )
+            enterPictureInPictureMode(params)
         }
     }
 
@@ -384,8 +306,7 @@ class PlayerActivity : AppCompatActivity() {
             KeyEvent.KEYCODE_ENTER -> {
 
                 channelList.visibility =
-                    if (
-                        channelList.visibility ==
+                    if (channelList.visibility ==
                         View.VISIBLE
                     )
                         View.GONE
@@ -404,11 +325,9 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
 
-        hideHandler
-            .removeCallbacksAndMessages(null)
+        hideHandler.removeCallbacksAndMessages(null)
 
         if (::player.isInitialized) {
-
             player.release()
         }
 
