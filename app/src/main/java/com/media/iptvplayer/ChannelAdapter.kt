@@ -26,15 +26,17 @@ class ChannelAdapter(
         parent: ViewGroup
     ): View {
 
-        val view = convertView ?: LayoutInflater
-            .from(context)
-            .inflate(
-                R.layout.item_channel_live,
-                parent,
-                false
-            )
+        val view =
+            convertView ?: LayoutInflater
+                .from(context)
+                .inflate(
+                    R.layout.item_channel_live,
+                    parent,
+                    false
+                )
 
-        val channel = channels[position]
+        val channel =
+            channels[position]
 
         val logo =
             view.findViewById<ImageView>(
@@ -46,21 +48,55 @@ class ChannelAdapter(
                 R.id.txtChannelName
             )
 
+        // Kanal adı
+
         name.text =
             if (channel.isFavorite)
                 "⭐ ${channel.name}"
             else
                 channel.name
 
-        if (channel.logo.isNotEmpty()) {
+        // Logo yükleme
 
-            logo.load(channel.logo)
+        if (
+            channel.logo.isNotEmpty()
+        ) {
+
+            logo.load(channel.logo) {
+
+                crossfade(true)
+
+                error(
+                    android.R.drawable
+                        .ic_menu_gallery
+                )
+
+                placeholder(
+                    android.R.drawable
+                        .ic_menu_gallery
+                )
+            }
 
         } else {
 
-            logo.setImageResource(
-                android.R.drawable.ic_menu_gallery
-            )
+            // TEST İÇİN SABİT LOGO
+
+            logo.load(
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/512px-Google_2015_logo.svg.png"
+            ) {
+
+                crossfade(true)
+
+                error(
+                    android.R.drawable
+                        .ic_menu_gallery
+                )
+
+                placeholder(
+                    android.R.drawable
+                        .ic_menu_gallery
+                )
+            }
         }
 
         return view
