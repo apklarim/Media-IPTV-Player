@@ -26,16 +26,10 @@ class ChannelAdapter(
         parent: ViewGroup
     ): View {
 
-        val layoutId = if (category == "LIVE") {
-            R.layout.item_channel_live
-        } else {
-            R.layout.item_channel
-        }
-
         val view = convertView ?: LayoutInflater
             .from(context)
             .inflate(
-                layoutId,
+                R.layout.item_channel_live,
                 parent,
                 false
             )
