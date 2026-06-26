@@ -2,56 +2,43 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Seçili -->
-
-    <item android:state_focused="true">
-
-        <shape android:shape="rectangle">
-
-            <solid android:color="#19C5D2"/>
-
-            <stroke
-                android:width="4dp"
-                android:color="#FFFFFF"/>
-
-            <corners android:radius="18dp"/>
-
-        </shape>
-
-    </item>
-
-    <!-- Basılı -->
-
     <item android:state_pressed="true">
 
-        <shape android:shape="rectangle">
+        <shape>
+            <corners android:radius="18dp"/>
 
-            <solid android:color="#0FA7B3"/>
+            <solid
+                android:color="#5500BCD4"/>
 
             <stroke
                 android:width="3dp"
-                android:color="#FFFFFF"/>
-
-            <corners android:radius="18dp"/>
-
+                android:color="#00BCD4"/>
         </shape>
 
     </item>
 
-    <!-- Normal -->
+    <item android:state_focused="true">
+
+        <shape>
+            <corners android:radius="18dp"/>
+
+            <solid
+                android:color="#5500BCD4"/>
+
+            <stroke
+                android:width="3dp"
+                android:color="#00BCD4"/>
+        </shape>
+
+    </item>
 
     <item>
 
-        <shape android:shape="rectangle">
-
-            <solid android:color="#10232B"/>
-
-            <stroke
-                android:width="2dp"
-                android:color="#2A4D57"/>
-
+        <shape>
             <corners android:radius="18dp"/>
 
+            <solid
+                android:color="#222222"/>
         </shape>
 
     </item>
