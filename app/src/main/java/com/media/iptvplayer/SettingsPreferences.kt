@@ -13,6 +13,9 @@ object SettingsPreferences {
     private const val AUTO_LOAD_LAST_PLAYLIST =
         "auto_load_last_playlist"
 
+    private const val AUTO_LOAD_LAST_CHANNEL =
+        "auto_load_last_channel"
+
     fun setAutoHideEnabled(
         context: Context,
         enabled: Boolean
@@ -73,6 +76,38 @@ object SettingsPreferences {
             )
             .getBoolean(
                 AUTO_LOAD_LAST_PLAYLIST,
+                true
+            )
+    }
+
+    fun setAutoLoadLastChannelEnabled(
+        context: Context,
+        enabled: Boolean
+    ) {
+
+        context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .putBoolean(
+                AUTO_LOAD_LAST_CHANNEL,
+                enabled
+            )
+            .apply()
+    }
+
+    fun isAutoLoadLastChannelEnabled(
+        context: Context
+    ): Boolean {
+
+        return context
+            .getSharedPreferences(
+                PREFS,
+                Context.MODE_PRIVATE
+            )
+            .getBoolean(
+                AUTO_LOAD_LAST_CHANNEL,
                 true
             )
     }
