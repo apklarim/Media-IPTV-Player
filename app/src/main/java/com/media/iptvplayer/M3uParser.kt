@@ -39,6 +39,11 @@ object M3uParser {
                 line.startsWith("https://")
             ) {
 
+                // URL sonundaki |User-Agent=... kısmını temizle
+
+                val cleanUrl =
+                    line.substringBefore("|")
+
                 val group =
                     currentGroup.lowercase()
 
@@ -81,7 +86,7 @@ object M3uParser {
 
                     Channel(
                         name = currentName,
-                        url = line,
+                        url = cleanUrl,
                         logo = currentLogo,
                         group = currentGroup,
                         category = category
