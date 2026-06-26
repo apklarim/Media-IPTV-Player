@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+        ThemeManager.applyTheme(this)
+
         autoLoadLastPlaylist()
 
         btnLiveTv = findViewById(R.id.btnLiveTv)
@@ -166,12 +168,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun autoLoadLastPlaylist() {
 
-        // Ayar kapalıysa son listeyi yükleme
-
-        if (
-            !SettingsPreferences
-                .isAutoLoadLastPlaylistEnabled(this)
-        ) {
+        if (!SettingsPreferences
+                .isAutoLoadLastPlaylistEnabled(this)) {
             return
         }
 
@@ -195,14 +193,9 @@ class MainActivity : AppCompatActivity() {
 
                 val content =
 
-                    if (
-                        playlist.type ==
-                        "M3U_FILE"
-                    ) {
+                    if (playlist.type == "M3U_FILE") {
 
-                        withContext(
-                            Dispatchers.IO
-                        ) {
+                        withContext(Dispatchers.IO) {
 
                             contentResolver
                                 .openInputStream(
@@ -218,9 +211,7 @@ class MainActivity : AppCompatActivity() {
 
                     } else {
 
-                        withContext(
-                            Dispatchers.IO
-                        ) {
+                        withContext(Dispatchers.IO) {
 
                             NetworkUtils
                                 .downloadText(
@@ -230,8 +221,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 ChannelRepository.channels =
-                    M3uParser
-                        .parse(content)
+                    M3uParser.parse(content)
                         .toMutableList()
 
             } catch (e: Exception) {
