@@ -4,5 +4,11 @@ import com.media.iptvplayer.model.Channel
 
 object ChannelRepository {
 
-    var channels: List<Channel> = emptyList()
+    val channels = mutableListOf<Channel>()
+
+    fun setChannels(list: List<Channel>) {
+
+        channels.clear()
+        channels.addAll(list)
+    }
 }
