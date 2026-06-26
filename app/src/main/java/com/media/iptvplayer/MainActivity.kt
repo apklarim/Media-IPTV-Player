@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnMovies: LinearLayout
     private lateinit var btnSeries: LinearLayout
     private lateinit var btnPlaylists: LinearLayout
+    private lateinit var btnSettings: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         btnMovies = findViewById(R.id.btnMovies)
         btnSeries = findViewById(R.id.btnSeries)
         btnPlaylists = findViewById(R.id.btnPlaylists)
+        btnSettings = findViewById(R.id.btnSettings)
 
         // TV / TV BOX Focus Animasyonu
 
@@ -38,7 +40,8 @@ class MainActivity : AppCompatActivity() {
             btnLiveTv,
             btnMovies,
             btnSeries,
-            btnPlaylists
+            btnPlaylists,
+            btnSettings
         )
 
         focusViews.forEach { view ->
@@ -48,16 +51,17 @@ class MainActivity : AppCompatActivity() {
 
             view.setOnFocusChangeListener { v, hasFocus ->
 
-                val anim = if (hasFocus)
-                    AnimationUtils.loadAnimation(
-                        this,
-                        R.anim.focus_gain
-                    )
-                else
-                    AnimationUtils.loadAnimation(
-                        this,
-                        R.anim.focus_lost
-                    )
+                val anim =
+                    if (hasFocus)
+                        AnimationUtils.loadAnimation(
+                            this,
+                            R.anim.focus_gain
+                        )
+                    else
+                        AnimationUtils.loadAnimation(
+                            this,
+                            R.anim.focus_lost
+                        )
 
                 v.startAnimation(anim)
             }
@@ -131,6 +135,20 @@ class MainActivity : AppCompatActivity() {
 
             true
         }
+
+        // AYARLAR
+
+        btnSettings.setOnClickListener {
+
+            animateButton(btnSettings)
+
+            startActivity(
+                Intent(
+                    this,
+                    SettingsActivity::class.java
+                )
+            )
+        }
     }
 
     private fun animateButton(view: View) {
@@ -169,11 +187,9 @@ class MainActivity : AppCompatActivity() {
 
             try {
 
-                var content = ""
+                val content =
+                    if (playlist.type == "M3U_FILE") {
 
-                if (playlist.type == "M3U_FILE") {
-
-                    content =
                         withContext(Dispatchers.IO) {
 
                             contentResolver
@@ -188,16 +204,15 @@ class MainActivity : AppCompatActivity() {
                                 } ?: ""
                         }
 
-                } else {
+                    } else {
 
-                    content =
                         withContext(Dispatchers.IO) {
 
                             NetworkUtils.downloadText(
                                 playlist.url
                             )
                         }
-                }
+                    }
 
                 ChannelRepository.channels =
                     M3uParser.parse(content)
