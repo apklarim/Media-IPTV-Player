@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,37 @@ class MainActivity : AppCompatActivity() {
         btnMovies = findViewById(R.id.btnMovies)
         btnSeries = findViewById(R.id.btnSeries)
         btnPlaylists = findViewById(R.id.btnPlaylists)
+
+        // TV / TV BOX Focus Animasyonu
+
+        val focusViews = listOf(
+            btnLiveTv,
+            btnMovies,
+            btnSeries,
+            btnPlaylists
+        )
+
+        focusViews.forEach { view ->
+
+            view.isFocusable = true
+            view.isFocusableInTouchMode = true
+
+            view.setOnFocusChangeListener { v, hasFocus ->
+
+                val anim = if (hasFocus)
+                    AnimationUtils.loadAnimation(
+                        this,
+                        R.anim.focus_gain
+                    )
+                else
+                    AnimationUtils.loadAnimation(
+                        this,
+                        R.anim.focus_lost
+                    )
+
+                v.startAnimation(anim)
+            }
+        }
 
         btnLiveTv.setOnClickListener {
 
@@ -88,8 +120,6 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        // Uzun basınca Gizli Gruplar ekranı açılır
-
         btnPlaylists.setOnLongClickListener {
 
             startActivity(
@@ -106,15 +136,15 @@ class MainActivity : AppCompatActivity() {
     private fun animateButton(view: View) {
 
         view.animate()
-            .scaleX(1.04f)
-            .scaleY(1.04f)
-            .setDuration(100)
+            .scaleX(1.08f)
+            .scaleY(1.08f)
+            .setDuration(120)
             .withEndAction {
 
                 view.animate()
                     .scaleX(1f)
                     .scaleY(1f)
-                    .setDuration(100)
+                    .setDuration(120)
                     .start()
             }
             .start()
