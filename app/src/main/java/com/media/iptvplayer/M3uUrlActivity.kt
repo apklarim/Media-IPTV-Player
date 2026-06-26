@@ -75,8 +75,7 @@ class M3uUrlActivity : AppCompatActivity() {
                         val channels =
                             M3uParser.parse(content)
 
-                        ChannelRepository.channels =
-                            channels
+                        ChannelRepository.setChannels(channels)
 
                         PlaylistManager.addPlaylist(
                             this@M3uUrlActivity,
