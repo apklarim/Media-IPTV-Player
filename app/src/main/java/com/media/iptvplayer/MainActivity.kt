@@ -34,8 +34,6 @@ class MainActivity : AppCompatActivity() {
         btnPlaylists = findViewById(R.id.btnPlaylists)
         btnSettings = findViewById(R.id.btnSettings)
 
-        // TV / TV BOX Focus Animasyonu
-
         val focusViews = listOf(
             btnLiveTv,
             btnMovies,
@@ -136,8 +134,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        // AYARLAR
-
         btnSettings.setOnClickListener {
 
             animateButton(btnSettings)
@@ -170,11 +166,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun autoLoadLastPlaylist() {
 
+        // Ayar kapalıysa son listeyi yükleme
+
+        if (
+            !SettingsPreferences
+                .isAutoLoadLastPlaylistEnabled(this)
+        ) {
+            return
+        }
+
         val lastId =
             LastPlaylistManager
                 .getLastPlaylistId(this)
 
-        if (lastId == -1L) return
+        if (lastId == -1L)
+            return
 
         val playlist =
             PlaylistManager
@@ -188,9 +194,15 @@ class MainActivity : AppCompatActivity() {
             try {
 
                 val content =
-                    if (playlist.type == "M3U_FILE") {
 
-                        withContext(Dispatchers.IO) {
+                    if (
+                        playlist.type ==
+                        "M3U_FILE"
+                    ) {
+
+                        withContext(
+                            Dispatchers.IO
+                        ) {
 
                             contentResolver
                                 .openInputStream(
@@ -206,16 +218,20 @@ class MainActivity : AppCompatActivity() {
 
                     } else {
 
-                        withContext(Dispatchers.IO) {
+                        withContext(
+                            Dispatchers.IO
+                        ) {
 
-                            NetworkUtils.downloadText(
-                                playlist.url
-                            )
+                            NetworkUtils
+                                .downloadText(
+                                    playlist.url
+                                )
                         }
                     }
 
                 ChannelRepository.channels =
-                    M3uParser.parse(content)
+                    M3uParser
+                        .parse(content)
                         .toMutableList()
 
             } catch (e: Exception) {
