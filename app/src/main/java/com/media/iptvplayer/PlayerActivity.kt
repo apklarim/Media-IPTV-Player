@@ -37,8 +37,8 @@ class PlayerActivity : AppCompatActivity() {
     private val hideHandler =
         Handler(Looper.getMainLooper())
 
-    // ÖNEMLİ: Her zaman güncel listeyi al
-    private val channels: MutableList<Channel>
+    // Her zaman güncel kanal listesini al
+    private val channels: List<Channel>
         get() = ChannelRepository.channels
 
     private var currentIndex = 0
@@ -92,6 +92,7 @@ class PlayerActivity : AppCompatActivity() {
                 override fun onPlayerError(
                     error: PlaybackException
                 ) {
+
                     error.printStackTrace()
                 }
             }
@@ -200,6 +201,18 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView.player = player
 
+        player.addListener(
+            object : Player.Listener {
+
+                override fun onPlayerError(
+                    error: PlaybackException
+                ) {
+
+                    error.printStackTrace()
+                }
+            }
+        )
+
         val mediaItem =
             MediaItem.fromUri(
                 Uri.parse(
@@ -208,7 +221,9 @@ class PlayerActivity : AppCompatActivity() {
             )
 
         player.setMediaItem(mediaItem)
+
         player.prepare()
+
         player.playWhenReady = true
     }
 
@@ -282,7 +297,8 @@ class PlayerActivity : AppCompatActivity() {
         ) {
 
             val params =
-                PictureInPictureParams.Builder()
+                PictureInPictureParams
+                    .Builder()
                     .setAspectRatio(
                         Rational(16, 9)
                     )
@@ -302,11 +318,13 @@ class PlayerActivity : AppCompatActivity() {
         when (keyCode) {
 
             KeyEvent.KEYCODE_DPAD_UP -> {
+
                 previousChannel()
                 return true
             }
 
             KeyEvent.KEYCODE_DPAD_DOWN -> {
+
                 nextChannel()
                 return true
             }
