@@ -56,7 +56,7 @@ class ChannelAdapter(
             else
                 channel.name
 
-        // Logo yükleme
+        // Kanal logosu
 
         if (
             channel.logo.isNotEmpty()
@@ -66,37 +66,22 @@ class ChannelAdapter(
 
                 crossfade(true)
 
-                error(
-                    android.R.drawable
-                        .ic_menu_gallery
+                placeholder(
+                    R.drawable.ic_media_logo
                 )
 
-                placeholder(
-                    android.R.drawable
-                        .ic_menu_gallery
+                error(
+                    R.drawable.ic_media_logo
                 )
             }
 
         } else {
 
-            // TEST İÇİN SABİT LOGO
+            // Logo yoksa uygulama logosu göster
 
-            logo.load(
-                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/512px-Google_2015_logo.svg.png"
-            ) {
-
-                crossfade(true)
-
-                error(
-                    android.R.drawable
-                        .ic_menu_gallery
-                )
-
-                placeholder(
-                    android.R.drawable
-                        .ic_menu_gallery
-                )
-            }
+            logo.setImageResource(
+                R.drawable.ic_media_logo
+            )
         }
 
         return view
