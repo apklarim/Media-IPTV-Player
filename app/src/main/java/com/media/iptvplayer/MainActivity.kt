@@ -1,6 +1,7 @@
 package com.media.iptvplayer
 
 import android.content.Intent
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -35,6 +36,12 @@ class MainActivity : AppCompatActivity() {
         btnSeries = findViewById(R.id.btnSeries)
         btnPlaylists = findViewById(R.id.btnPlaylists)
         btnSettings = findViewById(R.id.btnSettings)
+
+        applyCardTheme(btnLiveTv)
+        applyCardTheme(btnMovies)
+        applyCardTheme(btnSeries)
+        applyCardTheme(btnPlaylists)
+        applyCardTheme(btnSettings)
 
         val focusViews = listOf(
             btnLiveTv,
@@ -147,6 +154,27 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+    }
+
+    private fun applyCardTheme(
+        layout: LinearLayout
+    ) {
+
+        val drawable =
+            GradientDrawable()
+
+        drawable.cornerRadius = 18f
+
+        drawable.setColor(
+            ThemeManager.getCardColor(this)
+        )
+
+        drawable.setStroke(
+            2,
+            ThemeManager.getAccentColor(this)
+        )
+
+        layout.background = drawable
     }
 
     private fun animateButton(view: View) {
