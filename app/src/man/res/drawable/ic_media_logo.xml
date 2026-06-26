@@ -1,0 +1,33 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Arkaplan -->
+
+    <path
+        android:fillColor="#07161D"
+        android:pathData="M12,12h84a12,12 0,0 1,12 12v60a12,12 0,0 1,-12 12H12A12,12 0,0 1,0 84V24A12,12 0,0 1,12 12z"/>
+
+    <!-- TV Çerçevesi -->
+
+    <path
+        android:strokeColor="#19C5D2"
+        android:strokeWidth="4"
+        android:fillColor="#00000000"
+        android:pathData="M20,26h68a8,8 0,0 1,8 8v40a8,8 0,0 1,-8 8H20A8,8 0,0 1,12 74V34A8,8 0,0 1,20 26z"/>
+
+    <!-- Oynat Butonu -->
+
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M45,40 L45,68 L68,54 Z"/>
+
+    <!-- IPTV Yazısı -->
+
+    <path
+        android:fillColor="#19C5D2"
+        android:pathData="M20,88h68v8h-68z"/>
+
+</vector>
