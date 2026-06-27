@@ -1,10 +1,12 @@
 package com.media.iptvplayer
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.GridView
 import android.widget.LinearLayout
@@ -42,7 +44,6 @@ class ChannelListActivity : AppCompatActivity() {
             intent.getStringExtra("CATEGORY")
                 ?: "LIVE"
 
-        // Tüm kategoriler tek sütun
         listChannels.numColumns = 1
 
         loadingLayout.visibility = View.VISIBLE
@@ -68,6 +69,8 @@ class ChannelListActivity : AppCompatActivity() {
                 filteredChannels =
                     allChannels.toMutableList()
             }
+
+            loadGroups()
 
             loadChannels()
 
@@ -105,7 +108,7 @@ class ChannelListActivity : AppCompatActivity() {
                 _, _, position, _ ->
 
             ChannelRepository.setChannels(
-                allChannels
+                filteredChannels
             )
 
             startActivity(
@@ -161,5 +164,81 @@ class ChannelListActivity : AppCompatActivity() {
                 filteredChannels,
                 currentCategory
             )
+    }
+
+    private fun loadGroups() {
+
+        groupContainer.removeAllViews()
+
+        addGroupButton("Tümü") {
+
+            filteredChannels =
+                allChannels.toMutableList()
+
+            loadChannels()
+        }
+
+        addGroupButton("⭐ Favoriler") {
+
+            filteredChannels =
+                allChannels.filter {
+                    it.isFavorite
+                }.toMutableList()
+
+            loadChannels()
+        }
+
+        val groups =
+            allChannels
+                .map { it.group }
+                .distinct()
+                .filter { it.isNotEmpty() }
+                .sorted()
+
+        groups.forEach { group ->
+
+            addGroupButton(group) {
+
+                filteredChannels =
+                    allChannels.filter {
+                        it.group == group
+                    }.toMutableList()
+
+                loadChannels()
+            }
+        }
+    }
+
+    private fun addGroupButton(
+        title: String,
+        action: () -> Unit
+    ) {
+
+        val button = Button(this)
+
+        button.text = title
+
+        button.setBackgroundResource(
+            R.drawable.focus_selector
+        )
+
+        button.setTextColor(Color.WHITE)
+
+        val params =
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+
+        params.marginEnd = 12
+
+        button.layoutParams = params
+
+        button.setOnClickListener {
+
+            action()
+        }
+
+        groupContainer.addView(button)
     }
 }
