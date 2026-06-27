@@ -30,13 +30,12 @@ class ChannelAdapter(
             convertView ?: LayoutInflater
                 .from(context)
                 .inflate(
-                    R.layout.item_channel_live,
+                    R.layout.item_channel,
                     parent,
                     false
                 )
 
-        val channel =
-            channels[position]
+        val channel = channels[position]
 
         val logo =
             view.findViewById<ImageView>(
@@ -48,23 +47,18 @@ class ChannelAdapter(
                 R.id.txtChannelName
             )
 
-        // Kanal adı
-
         name.text =
             if (channel.isFavorite)
                 "⭐ ${channel.name}"
             else
                 channel.name
 
-        // Kanal logosu
-
-        if (
-            channel.logo.isNotEmpty()
-        ) {
+        if (channel.logo.isNotEmpty()) {
 
             logo.load(channel.logo) {
 
-                crossfade(true)
+                // Performans için animasyon kapatıldı
+                crossfade(false)
 
                 placeholder(
                     R.drawable.ic_media_logo
@@ -73,11 +67,12 @@ class ChannelAdapter(
                 error(
                     R.drawable.ic_media_logo
                 )
+
+                // Bellek kullanımını azalt
+                allowHardware(true)
             }
 
         } else {
-
-            // Logo yoksa uygulama logosu göster
 
             logo.setImageResource(
                 R.drawable.ic_media_logo
