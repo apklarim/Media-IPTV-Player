@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.AbsListView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.GridView
@@ -26,8 +27,12 @@ class ChannelListActivity : AppCompatActivity() {
 
     private var allChannels = mutableListOf<Channel>()
     private var filteredChannels = mutableListOf<Channel>()
+    private var visibleChannels = mutableListOf<Channel>()
 
     private var currentCategory = "LIVE"
+
+    private val PAGE_SIZE = 300
+    private var currentPage = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -72,6 +77,7 @@ class ChannelListActivity : AppCompatActivity() {
 
             loadGroups()
 
+            currentPage = 0
             loadChannels()
 
             loadingLayout.visibility = View.GONE
@@ -104,6 +110,41 @@ class ChannelListActivity : AppCompatActivity() {
             }
         )
 
+        listChannels.setOnScrollListener(
+            object : AbsListView.OnScrollListener {
+
+                override fun onScrollStateChanged(
+                    view: AbsListView?,
+                    scrollState: Int
+                ) {
+                }
+
+                override fun onScroll(
+                    view: AbsListView?,
+                    firstVisibleItem: Int,
+                    visibleItemCount: Int,
+                    totalItemCount: Int
+                ) {
+
+                    if (
+                        firstVisibleItem +
+                                visibleItemCount >=
+                        totalItemCount - 20
+                    ) {
+
+                        val maxPage =
+                            filteredChannels.size / PAGE_SIZE
+
+                        if (currentPage < maxPage) {
+
+                            currentPage++
+                            loadChannels()
+                        }
+                    }
+                }
+            }
+        )
+
         listChannels.setOnItemClickListener {
                 _, _, position, _ ->
 
@@ -117,7 +158,7 @@ class ChannelListActivity : AppCompatActivity() {
                     PlayerActivity::class.java
                 ).putExtra(
                     "url",
-                    filteredChannels[position].url
+                    visibleChannels[position].url
                 )
             )
         }
@@ -127,11 +168,11 @@ class ChannelListActivity : AppCompatActivity() {
 
             FavoriteManager.toggleFavorite(
                 this,
-                filteredChannels[position].name
+                visibleChannels[position].name
             )
 
-            filteredChannels[position].isFavorite =
-                !filteredChannels[position].isFavorite
+            visibleChannels[position].isFavorite =
+                !visibleChannels[position].isFavorite
 
             loadChannels()
 
@@ -153,15 +194,28 @@ class ChannelListActivity : AppCompatActivity() {
 
             }.toMutableList()
 
+        currentPage = 0
+
         loadChannels()
     }
 
     private fun loadChannels() {
 
+        val endIndex =
+            minOf(
+                (currentPage + 1) * PAGE_SIZE,
+                filteredChannels.size
+            )
+
+        visibleChannels =
+            filteredChannels
+                .subList(0, endIndex)
+                .toMutableList()
+
         listChannels.adapter =
             ChannelAdapter(
                 this,
-                filteredChannels,
+                visibleChannels,
                 currentCategory
             )
     }
@@ -175,6 +229,7 @@ class ChannelListActivity : AppCompatActivity() {
             filteredChannels =
                 allChannels.toMutableList()
 
+            currentPage = 0
             loadChannels()
         }
 
@@ -185,6 +240,7 @@ class ChannelListActivity : AppCompatActivity() {
                     it.isFavorite
                 }.toMutableList()
 
+            currentPage = 0
             loadChannels()
         }
 
@@ -204,6 +260,7 @@ class ChannelListActivity : AppCompatActivity() {
                         it.group == group
                     }.toMutableList()
 
+                currentPage = 0
                 loadChannels()
             }
         }
