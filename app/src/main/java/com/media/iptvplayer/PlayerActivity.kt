@@ -214,25 +214,27 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadChannelList() {
+private fun loadChannelList() {
 
-        channelList.adapter =
-            ArrayAdapter(
-                this,
-                android.R.layout.simple_list_item_1,
-                channels.map { it.name }
-            )
+    val adapter = ArrayAdapter(
+        this,
+        R.layout.player_channel_item,
+        R.id.txtPlayerChannel,
+        channels.map { it.name }
+    )
 
-        channelList.setOnItemClickListener {
-                _, _, position, _ ->
+    channelList.adapter = adapter
 
-            playChannel(position)
+    channelList.setOnItemClickListener {
+            _, _, position, _ ->
 
-            channelList.visibility = View.GONE
+        playChannel(position)
 
-            showControlsTemporarily()
-        }
+        channelList.visibility = View.GONE
+
+        showControlsTemporarily()
     }
+}
 
     private fun showControlsTemporarily() {
 
