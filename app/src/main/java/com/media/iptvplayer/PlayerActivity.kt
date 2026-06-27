@@ -95,6 +95,18 @@ class PlayerActivity : AppCompatActivity() {
         playerView.resizeMode =
             AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
+        if (channels.isNotEmpty() &&
+            currentIndex >= 0 &&
+            currentIndex < channels.size) {
+
+            val category =
+                channels[currentIndex].category
+
+            playerView.useController =
+                category == "MOVIE" ||
+                category == "SERIES"
+        }
+
         playChannel(currentIndex)
 
         btnPrev.setOnClickListener {
@@ -138,6 +150,10 @@ class PlayerActivity : AppCompatActivity() {
         currentIndex = index
 
         val channel = channels[index]
+
+        playerView.useController =
+            channel.category == "MOVIE" ||
+            channel.category == "SERIES"
 
         PlayerPreferences.saveLastChannel(
             this,
