@@ -5,10 +5,10 @@
     <!-- İnternet erişimi -->
 
     <uses-permission
-        android:name="android.permission.INTERNET"/>
+        android:name="android.permission.INTERNET" />
 
     <uses-permission
-        android:name="android.permission.ACCESS_NETWORK_STATE"/>
+        android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -20,33 +20,35 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
         <activity
-            android:name=".AddPlaylistActivity"/>
+            android:name=".AddPlaylistActivity" />
 
         <activity
-            android:name=".M3uUrlActivity"/>
+            android:name=".M3uUrlActivity" />
 
         <activity
-            android:name=".XtreamActivity"/>
+            android:name=".XtreamActivity" />
 
         <activity
-            android:name=".SettingsActivity"/>
+            android:name=".SettingsActivity" />
 
         <activity
-            android:name=".HiddenGroupsActivity"/>
+            android:name=".HiddenGroupsActivity" />
 
         <activity
-            android:name=".PlaylistListActivity"/>
+            android:name=".PlaylistListActivity" />
 
         <activity
             android:name=".DualPlayerActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
 
         <activity
             android:name=".PlayerActivity"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape"
+            android:supportsPictureInPicture="true"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation" />
 
         <activity
-            android:name=".ChannelListActivity"/>
+            android:name=".ChannelListActivity" />
 
         <activity
             android:name=".MainActivity"
@@ -55,10 +57,10 @@
             <intent-filter>
 
                 <action
-                    android:name="android.intent.action.MAIN"/>
+                    android:name="android.intent.action.MAIN" />
 
                 <category
-                    android:name="android.intent.category.LAUNCHER"/>
+                    android:name="android.intent.category.LAUNCHER" />
 
             </intent-filter>
 
