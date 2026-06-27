@@ -1,42 +1,82 @@
 package com.media.iptvplayer
 
+import java.io.BufferedInputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.zip.GZIPInputStream
 
 object NetworkUtils {
 
     fun downloadText(urlString: String): String {
 
-        val url = URL(urlString)
-
         val connection =
-            url.openConnection() as HttpURLConnection
+            (URL(urlString)
+                .openConnection() as HttpURLConnection)
 
         connection.requestMethod = "GET"
 
-        connection.connectTimeout = 15000
-        connection.readTimeout = 15000
-
-        connection.setRequestProperty(
-            "User-Agent",
-            "VLC/3.0.18 LibVLC/3.0.18"
-        )
+        connection.connectTimeout = 10000
+        connection.readTimeout = 30000
 
         connection.instanceFollowRedirects = true
 
+        connection.setRequestProperty(
+            "User-Agent",
+            "Mozilla/5.0"
+        )
+
+        connection.setRequestProperty(
+            "Accept-Encoding",
+            "gzip"
+        )
+
+        connection.setRequestProperty(
+            "Connection",
+            "Keep-Alive"
+        )
+
         connection.connect()
 
-        val code = connection.responseCode
-
-        if (code != HttpURLConnection.HTTP_OK) {
+        if (connection.responseCode
+            != HttpURLConnection.HTTP_OK
+        ) {
 
             throw Exception(
-                "Sunucu cevap kodu: $code"
+                "Sunucu cevap kodu: ${connection.responseCode}"
             )
         }
 
-        return connection.inputStream
-            .bufferedReader()
-            .readText()
+        val inputStream =
+
+            if (
+                "gzip".equals(
+                    connection.contentEncoding,
+                    ignoreCase = true
+                )
+            ) {
+
+                GZIPInputStream(
+                    BufferedInputStream(
+                        connection.inputStream,
+                        64 * 1024
+                    )
+                )
+
+            } else {
+
+                BufferedInputStream(
+                    connection.inputStream,
+                    64 * 1024
+                )
+            }
+
+        return inputStream
+            .bufferedReader(
+                Charsets.UTF_8,
+                64 * 1024
+            )
+            .use {
+                it.readText()
+            }
     }
 }
