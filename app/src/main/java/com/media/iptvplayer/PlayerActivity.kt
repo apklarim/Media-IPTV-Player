@@ -100,7 +100,8 @@ class PlayerActivity : AppCompatActivity() {
 
         if (channels.isNotEmpty() &&
             currentIndex >= 0 &&
-            currentIndex < channels.size) {
+            currentIndex < channels.size
+        ) {
 
             val category =
                 channels[currentIndex]
@@ -109,10 +110,10 @@ class PlayerActivity : AppCompatActivity() {
 
             playerView.useController =
                 category.contains("MOVIE") ||
-                category.contains("SERIES") ||
-                category.contains("FILM") ||
-                category.contains("DIZI") ||
-                category.contains("VOD")
+                        category.contains("SERIES") ||
+                        category.contains("FILM") ||
+                        category.contains("DIZI") ||
+                        category.contains("VOD")
         }
 
         playChannel(currentIndex)
@@ -160,15 +161,72 @@ class PlayerActivity : AppCompatActivity() {
 
         val channel = channels[index]
 
+        // Yetişkin kanal kontrolü
+
+        if (
+            AdultPinManager.isAdultChannel(
+                channel.group,
+                channel.name
+            )
+        ) {
+
+            val input =
+                android.widget.EditText(this)
+
+            input.inputType =
+                android.text.InputType.TYPE_CLASS_NUMBER
+
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("PIN Gerekli")
+                .setMessage(
+                    "Bu kanal yetişkin içeriği içeriyor.\nPIN giriniz."
+                )
+                .setView(input)
+
+                .setPositiveButton("Tamam") { _, _ ->
+
+                    if (
+                        input.text.toString()
+                        ==
+                        AdultPinManager.getPin(this)
+                    ) {
+
+                        startChannel(channel)
+
+                    } else {
+
+                        android.widget.Toast.makeText(
+                            this,
+                            "Yanlış PIN",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                .setNegativeButton(
+                    "İptal",
+                    null
+                )
+
+                .show()
+
+            return
+        }
+
+        startChannel(channel)
+    }
+
+    private fun startChannel(channel: Channel) {
+
         val category =
             channel.category.uppercase()
 
         playerView.useController =
             category.contains("MOVIE") ||
-            category.contains("SERIES") ||
-            category.contains("FILM") ||
-            category.contains("DIZI") ||
-            category.contains("VOD")
+                    category.contains("SERIES") ||
+                    category.contains("FILM") ||
+                    category.contains("DIZI") ||
+                    category.contains("VOD")
 
         PlayerPreferences.saveLastChannel(
             this,
