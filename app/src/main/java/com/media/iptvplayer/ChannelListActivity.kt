@@ -42,8 +42,8 @@ class ChannelListActivity : AppCompatActivity() {
             intent.getStringExtra("CATEGORY")
                 ?: "LIVE"
 
-        listChannels.numColumns =
-            if (currentCategory == "LIVE") 1 else 2
+        // Tüm kategoriler tek sütun
+        listChannels.numColumns = 1
 
         loadingLayout.visibility = View.VISIBLE
 
