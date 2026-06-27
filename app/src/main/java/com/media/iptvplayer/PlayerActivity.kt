@@ -1,12 +1,12 @@
 package com.media.iptvplayer
 
-import android.net.Uri
 import android.app.PictureInPictureParams
+import android.net.Uri
 import android.os.Build
-import android.util.Rational
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Rational
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ArrayAdapter
@@ -399,6 +399,23 @@ class PlayerActivity : AppCompatActivity() {
             keyCode,
             event
         )
+    }
+
+    override fun onUserLeaveHint() {
+
+        super.onUserLeaveHint()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            val params =
+                PictureInPictureParams.Builder()
+                    .setAspectRatio(
+                        Rational(16, 9)
+                    )
+                    .build()
+
+            enterPictureInPictureMode(params)
+        }
     }
 
     override fun onDestroy() {
