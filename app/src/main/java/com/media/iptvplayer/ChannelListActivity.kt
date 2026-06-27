@@ -4,17 +4,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.GridView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.media.iptvplayer.model.Channel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ChannelListActivity : AppCompatActivity() {
 
     private lateinit var listChannels: GridView
     private lateinit var searchBox: EditText
     private lateinit var groupContainer: LinearLayout
+    private lateinit var loadingLayout: LinearLayout
 
     private var allChannels = mutableListOf<Channel>()
     private var filteredChannels = mutableListOf<Channel>()
@@ -30,6 +36,7 @@ class ChannelListActivity : AppCompatActivity() {
         listChannels = findViewById(R.id.listChannels)
         searchBox = findViewById(R.id.etSearch)
         groupContainer = findViewById(R.id.groupContainer)
+        loadingLayout = findViewById(R.id.loadingLayout)
 
         currentCategory =
             intent.getStringExtra("CATEGORY")
@@ -38,23 +45,34 @@ class ChannelListActivity : AppCompatActivity() {
         listChannels.numColumns =
             if (currentCategory == "LIVE") 1 else 2
 
-        allChannels =
-            ChannelRepository.channels
-                .filter {
-                    it.category == currentCategory
+        loadingLayout.visibility = View.VISIBLE
+
+        lifecycleScope.launch {
+
+            withContext(Dispatchers.Default) {
+
+                allChannels =
+                    ChannelRepository.channels
+                        .filter {
+                            it.category == currentCategory
+                        }
+                        .toMutableList()
+
+                if (allChannels.isEmpty()) {
+
+                    allChannels =
+                        ChannelRepository.channels
+                            .toMutableList()
                 }
-                .toMutableList()
 
-        if (allChannels.isEmpty()) {
-            allChannels =
-                ChannelRepository.channels
-                    .toMutableList()
+                filteredChannels =
+                    allChannels.toMutableList()
+            }
+
+            loadChannels()
+
+            loadingLayout.visibility = View.GONE
         }
-
-        filteredChannels =
-            allChannels.toMutableList()
-
-        loadChannels()
 
         searchBox.addTextChangedListener(
             object : TextWatcher {
@@ -73,7 +91,6 @@ class ChannelListActivity : AppCompatActivity() {
                     before: Int,
                     count: Int
                 ) {
-
                     applyFilter()
                 }
 
@@ -87,7 +104,6 @@ class ChannelListActivity : AppCompatActivity() {
         listChannels.setOnItemClickListener {
                 _, _, position, _ ->
 
-            // Tüm kategori listesini koru
             ChannelRepository.setChannels(
                 allChannels
             )
