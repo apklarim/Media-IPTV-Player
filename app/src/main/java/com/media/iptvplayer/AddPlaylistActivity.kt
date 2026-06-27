@@ -6,7 +6,11 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.media.iptvplayer.model.Playlist
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AddPlaylistActivity : AppCompatActivity() {
 
@@ -80,28 +84,39 @@ class AddPlaylistActivity : AppCompatActivity() {
             resultCode == RESULT_OK
         ) {
 
-            data?.clipData?.let { clip ->
+            lifecycleScope.launch {
 
-                for (i in 0 until clip.itemCount) {
+                if (data?.clipData != null) {
 
-                    processUri(
-                        clip.getItemAt(i).uri
-                    )
+                    val clip = data.clipData!!
+
+                    for (i in 0 until clip.itemCount) {
+
+                        processUri(
+                            clip.getItemAt(i).uri
+                        )
+                    }
+
+                } else {
+
+                    data?.data?.let {
+
+                        processUri(it)
+                    }
                 }
 
-                finish()
-                return
-            }
+                Toast.makeText(
+                    this@AddPlaylistActivity,
+                    "Dosyalar eklendi",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-            data?.data?.let {
-
-                processUri(it)
                 finish()
             }
         }
     }
 
-    private fun processUri(uri: Uri) {
+    private suspend fun processUri(uri: Uri) {
 
         try {
 
@@ -116,17 +131,26 @@ class AddPlaylistActivity : AppCompatActivity() {
 
         try {
 
-            val content =
-                contentResolver
-                    .openInputStream(uri)
-                    ?.bufferedReader()
-                    ?.use { it.readText() }
-                    ?: ""
-
             val channels =
-                M3uParser.parse(content)
+                withContext(Dispatchers.IO) {
 
-            ChannelRepository.setChannels(channels)
+                    val content =
+                        contentResolver
+                            .openInputStream(uri)
+                            ?.bufferedReader()
+                            ?.use {
+                                it.readText()
+                            } ?: ""
+
+                    M3uParser.parse(content)
+                }
+
+            if (channels.isNotEmpty()) {
+
+                ChannelRepository.setChannels(
+                    channels
+                )
+            }
 
             val fileName =
                 uri.lastPathSegment
@@ -142,19 +166,16 @@ class AddPlaylistActivity : AppCompatActivity() {
                 )
             )
 
-            Toast.makeText(
-                this,
-                "$fileName eklendi",
-                Toast.LENGTH_SHORT
-            ).show()
-
         } catch (e: Exception) {
 
-            Toast.makeText(
-                this,
-                "Dosya okunamadı: ${e.message}",
-                Toast.LENGTH_LONG
-            ).show()
+            withContext(Dispatchers.Main) {
+
+                Toast.makeText(
+                    this@AddPlaylistActivity,
+                    "$uri okunamadı",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 }
