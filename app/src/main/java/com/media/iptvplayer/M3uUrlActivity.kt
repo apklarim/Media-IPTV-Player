@@ -3,8 +3,10 @@ package com.media.iptvplayer
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +18,7 @@ import kotlinx.coroutines.withContext
 class M3uUrlActivity : AppCompatActivity() {
 
     private lateinit var prefs: SharedPreferences
+    private lateinit var loadingLayout: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -28,13 +31,15 @@ class M3uUrlActivity : AppCompatActivity() {
             MODE_PRIVATE
         )
 
+        loadingLayout =
+            findViewById(R.id.loadingLayout)
+
         val etName =
             findViewById<EditText>(R.id.etPlaylistName)
 
         val etUrl =
             findViewById<EditText>(R.id.etPlaylistUrl)
 
-        // Taslak yükle
         etName.setText(
             prefs.getString("m3u_name", "")
         )
@@ -63,6 +68,9 @@ class M3uUrlActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
+                loadingLayout.visibility =
+                    View.VISIBLE
+
                 lifecycleScope.launch {
 
                     try {
@@ -73,9 +81,13 @@ class M3uUrlActivity : AppCompatActivity() {
                             }
 
                         val channels =
-                            M3uParser.parse(content)
+                            withContext(Dispatchers.Default) {
+                                M3uParser.parse(content)
+                            }
 
-                        ChannelRepository.setChannels(channels)
+                        ChannelRepository.setChannels(
+                            channels
+                        )
 
                         PlaylistManager.addPlaylist(
                             this@M3uUrlActivity,
@@ -86,8 +98,10 @@ class M3uUrlActivity : AppCompatActivity() {
                             )
                         )
 
-                        // Taslağı temizle
                         prefs.edit().clear().apply()
+
+                        loadingLayout.visibility =
+                            View.GONE
 
                         Toast.makeText(
                             this@M3uUrlActivity,
@@ -106,6 +120,9 @@ class M3uUrlActivity : AppCompatActivity() {
 
                     } catch (e: Exception) {
 
+                        loadingLayout.visibility =
+                            View.GONE
+
                         Toast.makeText(
                             this@M3uUrlActivity,
                             "Hata: ${e.message}",
@@ -117,6 +134,7 @@ class M3uUrlActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
+
         super.onPause()
 
         prefs.edit()
