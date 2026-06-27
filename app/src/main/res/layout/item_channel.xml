@@ -4,10 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="80dp"
     android:layout_margin="4dp"
-    android:orientation="horizontal"
+    android:background="@drawable/channel_item_selector"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:gravity="center_vertical"
-    android:padding="8dp"
-    android:background="#10212A">
+    android:orientation="horizontal"
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/imgLogo"
@@ -24,7 +27,7 @@
         android:layout_weight="1"
         android:maxLines="1"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
 </LinearLayout>
