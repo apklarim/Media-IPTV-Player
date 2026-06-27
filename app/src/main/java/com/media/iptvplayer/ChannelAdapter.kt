@@ -35,6 +35,10 @@ class ChannelAdapter(
                     false
                 )
 
+        // TV ve TV Box için odak desteği
+        view.isFocusable = true
+        view.isFocusableInTouchMode = true
+
         val channel = channels[position]
 
         val logo =
@@ -57,7 +61,6 @@ class ChannelAdapter(
 
             logo.load(channel.logo) {
 
-                // Performans için animasyon kapatıldı
                 crossfade(false)
 
                 placeholder(
@@ -68,7 +71,6 @@ class ChannelAdapter(
                     R.drawable.ic_media_logo
                 )
 
-                // Bellek kullanımını azalt
                 allowHardware(true)
             }
 
@@ -77,6 +79,27 @@ class ChannelAdapter(
             logo.setImageResource(
                 R.drawable.ic_media_logo
             )
+        }
+
+        // Odak animasyonu
+        view.setOnFocusChangeListener { v, hasFocus ->
+
+            if (hasFocus) {
+
+                v.animate()
+                    .scaleX(1.05f)
+                    .scaleY(1.05f)
+                    .setDuration(120)
+                    .start()
+
+            } else {
+
+                v.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(120)
+                    .start()
+            }
         }
 
         return view
