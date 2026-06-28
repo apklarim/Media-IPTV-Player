@@ -42,6 +42,16 @@
             android:textColor="#FFFFFF"
             android:textColorHint="#BBBBBB"/>
 
+        <Button
+            android:id="@+id/btnGroupManager"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Grupları Yönet"
+            android:visibility="gone"/>
+
         <GridView
             android:id="@+id/listChannels"
             android:layout_width="match_parent"
