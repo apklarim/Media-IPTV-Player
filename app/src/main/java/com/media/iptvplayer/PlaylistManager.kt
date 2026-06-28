@@ -7,33 +7,31 @@ import com.media.iptvplayer.model.Playlist
 
 object PlaylistManager {
 
-    private const val FILE_NAME =
-        "playlists.json"
+    private const val PREFS = "playlists"
+    private const val KEY = "playlist_list"
 
     fun getPlaylists(
         context: Context
     ): MutableList<Playlist> {
 
+        val prefs = context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
+        )
+
         val json =
-            FileStorageManager.readText(
-                FILE_NAME,
+            prefs.getString(
+                KEY,
                 "[]"
             )
 
         val type =
             object : TypeToken<MutableList<Playlist>>() {}.type
 
-        return try {
-
-            Gson().fromJson<MutableList<Playlist>>(
-                json,
-                type
-            ) ?: mutableListOf()
-
-        } catch (e: Exception) {
-
-            mutableListOf()
-        }
+        return Gson().fromJson(
+            json,
+            type
+        ) ?: mutableListOf()
     }
 
     fun savePlaylists(
@@ -41,10 +39,17 @@ object PlaylistManager {
         playlists: MutableList<Playlist>
     ) {
 
-        FileStorageManager.writeText(
-            FILE_NAME,
-            Gson().toJson(playlists)
+        val prefs = context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
         )
+
+        prefs.edit()
+            .putString(
+                KEY,
+                Gson().toJson(playlists)
+            )
+            .apply()
     }
 
     fun addPlaylist(
@@ -52,8 +57,7 @@ object PlaylistManager {
         playlist: Playlist
     ) {
 
-        val list =
-            getPlaylists(context)
+        val list = getPlaylists(context)
 
         list.add(playlist)
 
@@ -68,8 +72,7 @@ object PlaylistManager {
         id: Long
     ) {
 
-        val list =
-            getPlaylists(context)
+        val list = getPlaylists(context)
 
         list.removeAll {
             it.id == id
