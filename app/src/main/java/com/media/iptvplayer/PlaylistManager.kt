@@ -25,7 +25,7 @@ object PlaylistManager {
 
         return try {
 
-            Gson().fromJson(
+            Gson().fromJson<MutableList<Playlist>>(
                 json,
                 type
             ) ?: mutableListOf()
