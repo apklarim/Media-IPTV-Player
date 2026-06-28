@@ -10,9 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
-        <!-- Logo ve Başlık -->
+        <!-- ÜST ALAN -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="16dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -36,8 +36,8 @@
                     android:layout_height="wrap_content"
                     android:text="MEDYA IPTV PLAYER"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="32sp"/>
+                    android:textSize="32sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -64,7 +64,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                android:background="@drawable/home_card_background"
+                android:background="@drawable/focus_selector"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -77,9 +79,8 @@
                 <TextView
                     android:text="CANLI TV"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
                     android:textSize="24sp"
-                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -91,7 +92,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                android:background="@drawable/home_card_background"
+                android:background="@drawable/focus_selector"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -104,9 +107,8 @@
                 <TextView
                     android:text="FİLMLER"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
                     android:textSize="24sp"
-                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -118,7 +120,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                android:background="@drawable/home_card_background"
+                android:background="@drawable/focus_selector"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -131,9 +135,8 @@
                 <TextView
                     android:text="DİZİLER"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
                     android:textSize="24sp"
-                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -154,7 +157,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                android:background="@drawable/home_card_background"
+                android:background="@drawable/focus_selector"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -167,20 +172,22 @@
                 <TextView
                     android:text="LİSTELER"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
                     android:textSize="24sp"
-                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/btnFavorites"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                android:background="@drawable/home_card_background"
+                android:background="@drawable/focus_selector"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -193,9 +200,8 @@
                 <TextView
                     android:text="FAVORİLER"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
                     android:textSize="24sp"
-                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -207,7 +213,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="8dp"
-                android:background="@drawable/home_card_background"
+                android:background="@drawable/focus_selector"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -220,9 +228,8 @@
                 <TextView
                     android:text="AYARLAR"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold"
                     android:textSize="24sp"
-                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
