@@ -4,19 +4,17 @@ import android.content.Context
 
 object AdultPinManager {
 
-    private const val PREFS = "adult_pin"
+    private const val FILE_NAME =
+        "adult_pin.json"
 
-    fun getPin(context: Context): String {
+    fun getPin(
+        context: Context
+    ): String {
 
-        return context
-            .getSharedPreferences(
-                PREFS,
-                Context.MODE_PRIVATE
-            )
-            .getString(
-                "pin",
-                "1234"
-            ) ?: "1234"
+        return FileStorageManager.readText(
+            FILE_NAME,
+            "1234"
+        )
     }
 
     fun setPin(
@@ -24,17 +22,10 @@ object AdultPinManager {
         pin: String
     ) {
 
-        context
-            .getSharedPreferences(
-                PREFS,
-                Context.MODE_PRIVATE
-            )
-            .edit()
-            .putString(
-                "pin",
-                pin
-            )
-            .apply()
+        FileStorageManager.writeText(
+            FILE_NAME,
+            pin
+        )
     }
 
     fun isAdultChannel(
