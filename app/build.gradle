@@ -79,6 +79,11 @@ dependencies {
     implementation 'androidx.media3:media3-ui:1.8.0'
     implementation 'androidx.media3:media3-exoplayer-hls:1.8.0'
 
+    // Cache / Buffer sistemi
+    implementation 'androidx.media3:media3-datasource:1.8.0'
+    implementation 'androidx.media3:media3-datasource-okhttp:1.8.0'
+    implementation 'androidx.media3:media3-database:1.8.0'
+
     // Kanal logoları
     implementation 'io.coil-kt:coil:2.7.0'
 
