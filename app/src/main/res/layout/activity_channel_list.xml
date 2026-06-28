@@ -6,13 +6,22 @@
     android:orientation="horizontal"
     android:background="#07161D">
 
-    <!-- GRUPLAR -->
+    <!-- SOL TARAF GRUPLAR -->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvGroups"
-        android:layout_width="120dp"
+    <HorizontalScrollView
+        android:layout_width="140dp"
         android:layout_height="match_parent"
-        android:background="#10242D"/>
+        android:background="#10242D"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/groupContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp"/>
+
+    </HorizontalScrollView>
 
     <!-- SAĞ TARAF -->
 
@@ -33,11 +42,33 @@
             android:textColor="#FFFFFF"
             android:textColorHint="#BBBBBB"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvChannels"
+        <GridView
+            android:id="@+id/listChannels"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:numColumns="1"
+            android:verticalSpacing="4dp"
+            android:horizontalSpacing="4dp"
+            android:stretchMode="columnWidth"
+            android:background="#07161D"/>
+
+    </LinearLayout>
+
+    <!-- YÜKLENİYOR -->
+
+    <LinearLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="60dp"
+            android:layout_height="60dp"/>
 
     </LinearLayout>
 
