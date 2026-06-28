@@ -1,59 +1,33 @@
 package com.media.iptvplayer
 
 import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 object HiddenGroupsManager {
 
-    private const val FILE_NAME =
-        "hidden_groups.json"
-
-    private fun loadGroups():
-            MutableSet<String> {
-
-        val json =
-            FileStorageManager.readText(
-                FILE_NAME,
-                "[]"
-            )
-
-        val type =
-            object : TypeToken<MutableSet<String>>() {}.type
-
-        return try {
-
-            Gson().fromJson<MutableSet<String>>(
-                json,
-                type
-            ) ?: mutableSetOf()
-
-        } catch (e: Exception) {
-
-            mutableSetOf()
-        }
-    }
-
-    private fun saveGroups(
-        groups: MutableSet<String>
-    ) {
-
-        FileStorageManager.writeText(
-            FILE_NAME,
-            Gson().toJson(groups)
-        )
-    }
+    private const val PREFS = "hidden_groups"
+    private const val KEY_GROUPS = "groups"
 
     fun hideGroup(
         context: Context,
         group: String
     ) {
 
-        val groups = loadGroups()
+        val groups =
+            getHiddenGroups(context)
+                .toMutableSet()
 
         groups.add(group)
 
-        saveGroups(groups)
+        context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .putStringSet(
+                KEY_GROUPS,
+                groups
+            )
+            .apply()
     }
 
     fun unhideGroup(
@@ -61,11 +35,22 @@ object HiddenGroupsManager {
         group: String
     ) {
 
-        val groups = loadGroups()
+        val groups =
+            getHiddenGroups(context)
+                .toMutableSet()
 
         groups.remove(group)
 
-        saveGroups(groups)
+        context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .putStringSet(
+                KEY_GROUPS,
+                groups
+            )
+            .apply()
     }
 
     fun isHidden(
@@ -73,21 +58,36 @@ object HiddenGroupsManager {
         group: String
     ): Boolean {
 
-        return loadGroups().contains(group)
+        return getHiddenGroups(context)
+            .contains(group)
     }
 
     fun getHiddenGroups(
         context: Context
     ): Set<String> {
 
-        return loadGroups()
+        return context
+            .getSharedPreferences(
+                PREFS,
+                Context.MODE_PRIVATE
+            )
+            .getStringSet(
+                KEY_GROUPS,
+                emptySet()
+            ) ?: emptySet()
     }
 
     fun clearHiddenGroups(
         context: Context
     ) {
 
-        saveGroups(mutableSetOf())
+        context.getSharedPreferences(
+            PREFS,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .remove(KEY_GROUPS)
+            .apply()
     }
 
     fun restoreGroup(
