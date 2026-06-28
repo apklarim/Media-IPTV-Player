@@ -53,12 +53,11 @@ class DualPlayerActivity : AppCompatActivity() {
 
         updateOrientation()
 
-        // Görüntüyü kesmeden ekrana sığdır
         playerView1.resizeMode =
-            AspectRatioFrameLayout.RESIZE_MODE_FIT
+            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
         playerView2.resizeMode =
-            AspectRatioFrameLayout.RESIZE_MODE_FIT
+            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 
         player1 = ExoPlayer.Builder(this).build()
         player2 = ExoPlayer.Builder(this).build()
