@@ -130,7 +130,7 @@ class ChannelListActivity : AppCompatActivity() {
                 .filter { it.isNotEmpty() }
                 .sorted()
 
-            val checked = BooleanArray(groups.size)
+            val checked = BooleanArray(groups.size) { true }
 
             AlertDialog.Builder(this)
                 .setTitle("Grupları Gizle")
