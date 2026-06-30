@@ -55,7 +55,7 @@ class GroupManagerActivity : AppCompatActivity() {
 
         btnHideSelected.setOnClickListener {
 
-            HiddenGroupsManager.clear(this)
+            HiddenGroupsManager.clearHiddenGroups(this)
 
             for (i in groups.indices) {
                 if (listGroups.isItemChecked(i)) {
