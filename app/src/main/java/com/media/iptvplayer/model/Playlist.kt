@@ -14,5 +14,7 @@ data class Playlist(
 
     var password: String = "",
 
-    var server: String = ""
+    var server: String = "",
+
+    var expireDate: String = ""
 )
