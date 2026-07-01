@@ -1,74 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:background="#07161D">
+    android:background="#0F1117">
 
-    <!-- SOL TARAF GRUPLAR -->
-
-    <HorizontalScrollView
-        android:layout_width="140dp"
-        android:layout_height="match_parent"
-        android:background="#10242D"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:id="@+id/groupContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="8dp"/>
-
-    </HorizontalScrollView>
-
-    <!-- SAĞ TARAF -->
-
+    <!-- Top Bar -->
     <LinearLayout
+        android:id="@+id/topBar"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="#171B24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <EditText
-            android:id="@+id/etSearch"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_margin="8dp"
-            android:background="@drawable/focus_selector"
-            android:hint="Kanal Ara"
-            android:padding="12dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#BBBBBB"/>
-<GridView
-            android:id="@+id/listChannels"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:numColumns="1"
-            android:verticalSpacing="4dp"
-            android:horizontalSpacing="4dp"
-            android:stretchMode="columnWidth"
-            android:background="#07161D"/>
+            android:text="Kanallar"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="#FFFFFF"/>
+
+        <ImageButton
+            android:id="@+id/btnSearch"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_search"
+            android:tint="#FFFFFF"
+            android:contentDescription="Ara"/>
 
     </LinearLayout>
 
-    <!-- YÜKLENİYOR -->
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_margin="12dp"
+        android:hint="Kanal ara..."
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#9AA4B2"
+        android:background="@android:drawable/edit_text"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <LinearLayout
-        android:id="@+id/loadingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#99000000"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvChannels"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/etSearch"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <ProgressBar
-            android:layout_width="60dp"
-            android:layout_height="60dp"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
